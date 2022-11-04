@@ -1,0 +1,3 @@
+tableau effect not highlighting when its being done
+hand limit not being enforced
+two cards of the same when and do should not be in the market at the same time.
