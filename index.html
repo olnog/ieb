@@ -9,7 +9,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-    <title> </title>
+    <title>Incremental Engine Builder</title>
     <style>
 		#blue{
 			border: 1px blue solid;
@@ -43,6 +43,10 @@
 			border: 1px red solid;
 		}
 		
+		.win {
+			font-weight: bold;
+		}
+		
     </style>
 
   </head>
@@ -55,21 +59,26 @@
 			</div>
 		</div>
 
-		<div id='everythingElse' class=''>
-			<div id='tableauLabel' class='text-center fw-bold d-none tableau'>		
-				Tableau (<span id='tableauSize'></span>/<span id='tableauLimit'></span>)
-			</div><div id='tableauDestroyed' class='text-center fw-bold d-none'>		
+		<div id='' class='d-none everythingElse'>
+			<div id='tableauDestroyed' class='text-center fw-bold d-none'>		
 				Destroyed Cards: <span id='destroyed'></span>
-			</div><div class='text-center tableau d-none'>
+			</div>
+			<div class='text-center tableau d-none'>
 				<button id='wipe' class='text-center btn btn-outline-danger ps-5 pe-5 p-3'>
 					wipe (<span id='wipes'></span>)
 				</button>
 			</div>
-			<div id='cards' class='mb-3'></div>
-			<div class='text-center mb-3'>
-				<button id='available' class='btn btn-lg form-control btn-outline-dark p-3'>&nbsp;</button>
+			<div id='cards' class='mb-3'></div>			
+			<div id='tableauLabel' class='text-center fw-bold d-none tableau'>		
+				Tableau (<span id='tableauSize'></span>/<span id='tableauLimit'></span>)
 			</div>
-			
+		</div>
+			<div class='text-center mb-3 mt-3 ps-5 pe-5'>
+				<button id='clickButton' class='btn btn-lg form-control btn-outline-dark p-3'>
+					<span id='available'></span>/<span id='winAt'></span> available
+				</button>
+			</div>
+		<div id='' class='d-none everythingElse'>
 			<div class='fw-bold text-center'>
 				Market 
 				<span id='marketCaption'>

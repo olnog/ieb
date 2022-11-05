@@ -11,9 +11,15 @@ class UI{
 	$("#wipe").prop('disabled', false);	
 	$("#wipes").html(config.stock[config.types.indexOf('wipes')]);		
 	$("#destroyed").html(config.stock[config.types.indexOf('destroyed')]);
-	//console.log(config.stock[config.types.indexOf('restarts')]);
+	$("#winAt").html(AUTO_WIN_AT);
+	$("#tableauLabel").removeClass('fs-4');
+	$("#tableauLabel").removeClass('text-decoration-underline');
+	if (config.tableau.length >= config.stock[config.types.indexOf('tableauLimit')]){
+		$("#tableauLabel").addClass('fs-4');
+		$("#tableauLabel").addClass('text-decoration-underline');
+	}
 	if (config.numOfTurns > 0){
-		$("#everythingElse").removeClass('d-none');
+		$(".everythingElse").removeClass('d-none');
 	}
 	if (config.stock[config.types.indexOf('wins')] > 0 
 		|| config.stock[config.types.indexOf('losses')] > 0 ){
@@ -25,7 +31,6 @@ class UI{
 		$("#restart").removeClass('d-none');
 	}
 	$("#restarts").html(config.stock[config.types.indexOf('restarts')]);
-	console.log('destroyed: ' + config.stock[config.types.indexOf('destroyed')]);
 	if (config.stock[config.types.indexOf('destroyed')] > 0){
 		$("#tableauDestroyed").removeClass('d-none');
 	}
@@ -100,14 +105,29 @@ class UI{
 	
 	fetchMarketCard(cardID){	
 		let card = market.cards[cardID];
-		let disabledClass = '';
+		let disabledClass = '', doClass = '', whenClass = '', winClass = '';
+		if (game.matchWhenInTableau(card.watDo, card.doResources)){
+			doClass = ' text-decoration-underline ';
+		}
+		if (card.watDo == 'win'){
+			winClass = ' win ';
+		}
 
+		if (card.when == 'convert' && game.canTheyConvert(card.whenResources[0], card.whenResources[1])){
+			whenClass = ' fw-bold ';
+		} else if ((card.when == 'increment' || card.when == 'decrement') 
+			&& game.canThey(card.when, card.whenResources[0])){
+			whenClass = ' fw-bold ';
+		} else if (card.when != 'increment' && card.when != 'decrement' && card.when != 'convert' 
+			&& game.doTheyOwnDo(card.when)){
+			whenClass = ' fw-bold ';
+		}
 		let html = "<div class='cardDiv p-3'>";
 		html += "<div class='text-center mb-3'>Cost: " + card.cost + "</div>";		
-		html += "<div> When " + config.when.captions[config.actions.indexOf(card.when)] 
+		html += "<div class='" + whenClass + "'> When " + config.when.captions[config.actions.indexOf(card.when)] 
 		html += this.fetchCardResourceRef(card.when, card.whenResources, card.quantity, 'condition');
 		html += ":</div>";
-		html += "<div class='ms-3'>" + config.watDo.captions[config.actions.indexOf(card.watDo)] 
+		html += "<div class='ms-3 " + doClass + " " + winClass + "'>" + config.watDo.captions[config.actions.indexOf(card.watDo)] 
 		html += this.fetchCardResourceRef(card.watDo, card.doResources, card.quantity, 'do');
 		html += "</div>";	
 			

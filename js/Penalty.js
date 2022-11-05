@@ -13,14 +13,17 @@ class Penalty {
 	}
 	
 	checkWhen(when){
-		let banned = ['win'];
-		if (banned.includes(when)){
-			return false;
-		}
+		let banned = ['win', 'market-refresh'];
+		console.log('Penalty: ', when, market.matchDo(when), game.doTheyOwnDo(when));
 		if (! market.matchDo(when) && !game.doTheyOwnDo(when)){
+			console.log("penalty: redudant check");
 			return false;
 		}
-		if (when == 'decrement' && this.whenResources[0] == 'losses'){
+		if ((when == 'increment' || when == 'decrement') && this.whenResources[0] == 'losses'){
+			return false;
+		}		
+
+		if (banned.includes(when)){
 			return false;
 		}
 		return true;

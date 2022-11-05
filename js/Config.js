@@ -9,9 +9,9 @@ class Config {
 	cardsChecked = [];	
 	checking = null;
 	checkingDelay = 250;
-	defaultDistributedCardTypes = ['clicks', 'available', 'reloads',];
+	defaultDistributedCardTypes = ['clicks', 'available', 'reloads', 'marketLimit'];
 	defaultStock = [
-		0, 10, 1, 
+		0, 10, 5, 
 		5, TABLEAU_LIMIT, 3, 
 		1, 0, 0,
 		0, 0,
@@ -25,7 +25,7 @@ class Config {
 		'clicks', 'available', 'reloads', 		
 		'marketLimit', 'tableauLimit', 'initMarket', 
 		'wipes', 'destroyed', 'wins', 
-		'losses', 'restarts', 'adSkips'
+		'losses', 'restarts', 
 	];	
 		
 	watDo = {
@@ -111,6 +111,7 @@ class Config {
 		for (let i in saveThis){			
 			saveArr[i] = this.stock[this.types.indexOf(saveThis[i])];
 		}
+		this.numOfTurns = 0;
 		this.stock = this.defaultStock.slice();
 		this.distributedCardTypes = this.defaultDistributedCardTypes.slice();
 		this.resetCardsChecked();

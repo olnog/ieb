@@ -13,7 +13,7 @@ class Market {
 			this.refresh();
 		}
 		if (game.doTheyOwnDo('market-draw') && !config.distributedCardTypes.includes('marketLimit')){
-			config.distributedCardTypes.push('marketLimit');
+			//config.distributedCardTypes.push('marketLimit');
 			//config.distributedCardTypes.push('initMarket');
 		}
 		if (config.tableau.length > 0 && !config.distributedCardTypes.includes('tableauLimit')){
@@ -22,29 +22,27 @@ class Market {
 		}
 		if (config.tableau.length / config.stock[config.types.indexOf('tableauLimit')] > .5 
 			&& !config.distributedCardTypes.includes('restarts')){
-			config.distributedCardTypes.push('restarts');
-			config.distributedCardTypes.push('adSkips');
+			config.distributedCardTypes.push('restarts');			
 		}
 		game.doCheck('market-buy', null, null);	
 	}
 	
 	checkPenalties(when, from, to){
-		console.log('checkPenalties', when, from, to);
+		
 		let howManyPenalties = this.howManyPenaltyCards();
 		if (howManyPenalties < 1){
 			return;			
 		}
-		
+		console.log('checkPenalties', when, from, to);
 		for (let i = 0; i < this.cards.length; i++){			
 			let card = this.cards[i];
-			console.log(card);
 			if (card.constructor.name != 'Penalty' || when != card.when){
 				continue;
 			}
 			if (from == null 
 			|| (from == card.whenResources[0] && to == null) 
 			|| (from == card.whenResources[0] && to == card.whenResources[1])){
-				console.log(card, "DO!");
+				console.log('Doing penalty!', card);
 				game.doFromCheckCondition(card);
 			}
 		}

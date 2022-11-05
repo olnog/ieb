@@ -7,20 +7,21 @@ class Card{
 	whenResources = [];
 	
 	constructor (){
-		let picking = true;
-		
-		this.cost = randNum(1, 
-			Math.floor((config.stock[config.types.indexOf('available')] 
-				+ config.stock[config.types.indexOf('clicks')]) / 3) );
-		if (config.numOfTurns < 1){
-			this.cost = randNum(1, 2);
-		}
+		let max 
+			= Math.round((config.stock[config.types.indexOf('clicks')]  
+			+ (config.stock[config.types.indexOf('available')] - 4) 
+			+ config.tableau.length) / 3);
+		this.cost = randNum(1, max);		
 		if (this.cost < 1){
 			this.cost = 1;
 		}
+		
 		this.whenResources = this.pickResources(2);
+		
 		this.doResources = this.genDoResources();		
+		
 		this.genWhenAndWatDo();		
+		
 		this.quantity = randNum(2, 4);
 	}
 	
@@ -41,7 +42,10 @@ class Card{
 		}
 		*/
 		if (poss == 'win' && (when == 'market-buy' || when == 'market-draw' 
-			|| when == 'clickButton' || when == 'market-refresh')){
+			|| when == 'clickButton' || when == 'market-refresh' || when == 'destroy')){
+			return false;
+		}
+		if (when == 'market-refresh' && poss == 'increment' && this.doResources[0] == 'reloads'){
 			return false;
 		}
 		/*
@@ -83,7 +87,7 @@ class Card{
 	
 	checkWhen(whenID, pass){
 		let always = ['clickButton', 'market-draw', 'market-refresh', 'card-buy'];
-		let banned = ['market-discardCard', 'decrement', 'win'];
+		let banned = ['market-discardCard', 'decrement', 'win', 'wipe'];
 		let poss = config.actions[whenID];				
 		/*
 		if (poss == 'convert' && !game.canTheyConvert(this.whenResources[0], this.whenResources[1])){
@@ -112,7 +116,13 @@ class Card{
 	genWatDo(when, pass){
 		let actionID = null;
 		while (actionID == null){
-			let rand = randNum(1, config.watDo.probSum);		
+			let rand = randNum(1, config.actions.length - 1);		
+			let poss = config.actions[rand];
+			if (when != poss && this.checkDo(rand, when, pass)){				
+				actionID = rand;			
+			}			
+			
+			/*
 			for (let i in config.watDo.probabilities){
 				let probability = config.watDo.probabilities[i];								
 				let poss = config.actions[i];				
@@ -125,15 +135,23 @@ class Card{
 					break;
 				}								
 			}
+			*/
 		}
 		return config.actions[actionID];		
 	}
 	
 	genWhen(pass){
-		let whenID = null;				
-		while (whenID == null){
+		let actionID = null;				
+		while (actionID == null){
 			
-			let rand = randNum(1, config.when.probSum);		
+			//let rand = randNum(1, config.when.probSum);		
+			let rand = randNum(1, config.actions.length - 1);		
+			let poss = config.actions[rand];
+			if (this.checkWhen(rand, pass)){				
+				actionID = rand;			
+			}			
+			/*
+			
 			for (let i in config.when.probabilities){
 				let probability = config.when.probabilities[i];								
 				let poss = config.actions[i];
@@ -147,8 +165,9 @@ class Card{
 					break;
 				}								
 			}
+			*/
 		}		
-		return config.actions[whenID];
+		return config.actions[actionID];
 	}
 	
 	genWhenAndWatDo(){
@@ -186,7 +205,7 @@ class Card{
 		for (let i = 0; i < numOfResources; i ++){
 			picking = true;
 			while (picking){
-				let randType = randNum(0, config.distributedCardTypes.length -1);
+				let randType = randNum(0, config.distributedCardTypes.length -1);				
 				if (!resources.includes(config.distributedCardTypes[randType])){
 					resources.push(config.distributedCardTypes[randType]);
 					picking = false;

@@ -12,20 +12,20 @@ class Game{
 			let card = config.tableau[cardID];
 			//got an error message when I won. not sure if its because of the win or because there was another do attached to the when
 			//console.log(config.cardsChecked.includes(cardID), card.when != which, card.when, which );
-			if (config.cardsChecked.includes(cardID) || card.when != which 
-				|| ((card.when == 'increment' || card.when == 'decrement') 
-				&& card.whenResources[0] != resourceType) 
-				|| (card.when == 'convert'  
-				&& card.whenResources[0] != resourceType && card.whenResources[1] != resourceTo)){
-				continue;
-			
+			if (config.cardsChecked.includes(cardID) || card.when != which){				
+				continue;			
 			}
-			console.log('check -> do: ' + card.watDo);
-			checking = true;
-			config.cardsChecked.push(cardID);			
-			this.doFromCheckCondition(card);
-			if (config.cardsChecked.length == config.tableau.length){
-				config.resetCardsChecked();
+			if (resourceType == null 
+				|| (resourceType == card.whenResources[0] && resourceTo == null) 
+				|| (resourceType == card.whenResources[0] && resourceTo == card.whenResources[1])){
+				console.log('check -> do: ' + card.watDo, which, resourceType, resourceTo);
+				console.log(card);
+				checking = true;
+				config.cardsChecked.push(cardID);			
+				this.doFromCheckCondition(card);
+				if (config.cardsChecked.length == config.tableau.length){
+					config.resetCardsChecked();
+				}
 			}
 			
 		}
@@ -38,11 +38,16 @@ class Game{
 	}
 	
 	checkEnd(){
-		if(config.stock[config.types.indexOf('available')] < 1 
-			//there could be a potential for the game to continue IF AND ONLY IF there is a way to increment market limit in their tableau.
-			|| config.stock[config.types.indexOf('marketLimit')] < 1		
-			|| config.stock[config.types.indexOf('tableauLimit')] < 1){
-		  this.lose();
+		let noZero = ['available', 'marketLimit', 'tableauLimit'];
+		//there could be a potential for the game to continue IF AND ONLY IF there is a way to increment market limit in their tableau.
+		for (let typeName of noZero){
+			if(config.stock[config.types.indexOf(typeName)] < 1){
+				this.lose(typeName);
+			}
+		}
+				
+		if(config.stock[config.types.indexOf('available')] > AUTO_WIN_AT){
+			this.win('available', null);
 		}
 	}
 	
@@ -57,15 +62,15 @@ class Game{
 			}
 			nameCheck = true;
 			if (card[resourceName][0] === resources[0] && (name == 'increment' || name == 'decrement')){
-				console.log(where, name, resources, "THEY GOT IT");
 				return true;
 			}
 		}
 	}
 	
-	clickButton(){
-	  config.decrement('available', 1);	  
-	  config.increment('clicks', 1);
+	clickButton(){	  
+	  config.stock[config.types.indexOf('available')]--;
+	  config.stock[config.types.indexOf('clicks')]++;
+	  this.checkEnd();
 	  game.doCheck('clickButton', null, null);
 	}
 		
@@ -74,7 +79,7 @@ class Game{
 	canThey(what, resourceName){
 		//increment or decrement
 		for (let card of config.tableau){
-			if (card.watDo == what && card.doResources[0]){
+			if (card.watDo == what && card.doResources[0] == resourceName){
 				return true;
 			}
 		}
@@ -86,9 +91,10 @@ class Game{
 			return false;
 		}
 		for (let card of config.tableau){
-			if (from == null && to == card.doResources[1]){
-				return true;
-			} else if (from == card.doResources[0] && to == card.doResources[1]){
+			if (card.watDo != 'convert'){
+				continue;
+			}
+			if (from == card.doResources[0] && to == card.doResources[1]){
 				return true;
 			}
 			
@@ -104,10 +110,13 @@ class Game{
 	}
 	
 	doFromCheckCondition(card){
+		console.log('doingFromCheckCondition', card.watDo, card);
 		if (card.watDo == 'decrement' || card.watDo == 'increment'){					
 			config[card.watDo](card.doResources[0], 1 ) //changed this from card.quantity to 1 because it seems OP other wise
 		} else if (card.watDo == 'convert'){				
 			config[card.watDo](card.doResources[0], card.quantity, card.doResources[1]);
+		} else if (card.watDo == 'win'){	
+			this[card.watDo]('when', card.when);
 		} else if (card.watDo.split('-')[0] == 'market'){					
 			market[card.watDo.split('-')[1]]();
 		} else {
@@ -116,9 +125,9 @@ class Game{
 
 	}
 	
-	doTheyOwnDo(possiblity){
+	doTheyOwnDo(poss){
 		for (let card of config.tableau){
-			if (card.watDo == card.watDo){
+			if (poss == card.watDo){
 				return true;
 			}
 		}
@@ -148,14 +157,35 @@ class Game{
 		}
 	}
 	
-	lose(){
-		alert('You lose!!! try again.');
+	lose(why){
+		alert('You lost because you ran out of ' + why + ". How many losses can you get?");
 		config.stock[config.types.indexOf('losses')]++;
 		if (!config.distributedCardTypes.indexOf('losses')){
 			config.distributedCardTypes.push('losses');
 		}
 		this.restart();
+		
 	}
+	
+	matchWhenInTableau(actionName, resources){
+		for (let card of config.tableau){
+			if(card.when != actionName){
+				continue;
+			}
+			if ((actionName == 'increment' || actionName == 'decrement')
+				&& card.whenResources[0] != resources[0]){
+				continue;
+			}
+			if (actionName == 'convert'
+				&& (card.whenResources[0] != resources[0] 
+				|| card.whenResources[1] != resources[1])){				
+				continue;
+			}
+			return true;
+		}
+		return false;		
+	}
+	
 	restart(clicked){
 		if (clicked != null 
 			&& config.stock[config.types.indexOf('restarts')] < 1){
@@ -167,10 +197,16 @@ class Game{
 		}
 		config.reset();
 		market.refresh();
+		ui.refresh();
 	}
 	
-	win(){
-		alert("You won! Congrats!");
+	win(why, whenIs){
+		let reasons = { increment: 'incremented', convert: 'converted', destroyed: 'destroyed a card'};
+		if (why == 'available'){
+			alert("You won because you increased available past " + AUTO_WIN_AT + ". How many wins can you get?");
+		} else if (why == 'when'){
+			alert("You won because the right card in your tableau " + reasons[whenIs] + ". How many wins can you get?");			
+		}
 		config.stock[config.types.indexOf('wins')]++;
 		if (!config.distributedCardTypes.indexOf('wins')){
 			config.distributedCardTypes.push('wins');
@@ -182,9 +218,8 @@ class Game{
 		if (clicked != null && (config.stock[config.types.indexOf('wipes')] < 1 || config.tableau.length < 1)){
 			return;
 		}		
-		config.tableau = [];
-
 		config.increment('available', config.tableau.length);
+		config.tableau = [];
 		if (clicked != null){			
 			config.decrement('wipes', 1);
 		}
