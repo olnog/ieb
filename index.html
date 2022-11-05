@@ -23,7 +23,7 @@
 		
 		.cardDiv {
 			border:1px black solid;
-			min-height:275px;			
+			min-height:350px;			
 			width:150px;
 			display:block;
 			margin:5px;
@@ -33,6 +33,13 @@
 		
 		.checking {
 			background-color:lightgrey;
+			border: 1px gold solid;
+			font-weight: bold;
+		}
+		
+		.important {
+			background-color: lightgrey;
+			color: white;
 		}
 		
 		.penalty{
@@ -45,56 +52,146 @@
 		
 		.win {
 			font-weight: bold;
+			color: #fc881a;
 		}
 		
     </style>
 
   </head>
     <body>
-		<div id='stats' class='row mb-3 d-none'>
-			<div id='winsLabel' class='col text-center'>
-				Wins: <span id='wins'></span>
-			</div><div id='lossesLabel' class='col text-center'>
-				Losses: <span id='losses'></span>
-			</div>
+		<div class='text-center'>
+			Audio On? <input id='audioOn' type='checkbox'>
 		</div>
+		<div id='game' class='windows'>
+			<div id='stats' class='row mb-3 d-none'>
+				<div id='winsLabel' class='col text-center'>
+					Wins: <span id='wins'></span>
+					<img src='img2/wins.png' height='32' width='32'>
+				</div><div id='lossesLabel' class='col text-center'>
+					Losses: <span id='losses'></span>
+					<img src='img2/losses.png' height='32' width='32'>
+				</div>
+			</div>
 
-		<div id='' class='d-none everythingElse'>
-			<div id='tableauDestroyed' class='text-center fw-bold d-none'>		
-				Destroyed Cards: <span id='destroyed'></span>
+			<div id='' class='d-none everythingElse'>
+				<div id='tableauDestroyed' class='text-center fw-bold d-none'>
+				<div>
+					<img src='img2/destroyed.png' height='32' width='32'>
+				</div><div>
+					Destroyed Cards: 
+					<span id='destroyed'></span>
+				</div>
+					
+				</div>
+				<div class='text-center tableau d-none'>
+					<button id='wipe' class='text-center btn btn-outline-danger ps-5 pe-5 p-3'>
+						<div>
+							<img src='img2/wipes.png' height='32' width='32'>
+						</div><div>
+							(<span id='wipes'></span>)
+						</div>
+					</button>
+				</div>
+				<div id='cards' class='mb-3'></div>			
+				<div id='tableauLabel' class='text-center fw-bold d-none tableau'>		
+					Tableau 
+					<span id='tableauSize'></span>/<span id='tableauLimit'></span>
+					<div>
+						<img src='img2/tableauLimit.png' height='32' width='32'>
+					</div>
+				</div>
 			</div>
-			<div class='text-center tableau d-none'>
-				<button id='wipe' class='text-center btn btn-outline-danger ps-5 pe-5 p-3'>
-					wipe (<span id='wipes'></span>)
-				</button>
-			</div>
-			<div id='cards' class='mb-3'></div>			
-			<div id='tableauLabel' class='text-center fw-bold d-none tableau'>		
-				Tableau (<span id='tableauSize'></span>/<span id='tableauLimit'></span>)
-			</div>
-		</div>
-			<div class='text-center mb-3 mt-3 ps-5 pe-5'>
+			<div id='clickButtonDiv' class='text-center mb-3 mt-3 ps-5 pe-5'>
 				<button id='clickButton' class='btn btn-lg form-control btn-outline-dark p-3'>
-					<span id='available'></span>/<span id='winAt'></span> available
+					<div>
+						<img src='img2/available.png' height='32' width='32'>
+						
+					</div><div>
+						<span id='available'></span>/<span id='winAt'></span>
+					</div>
 				</button>
 			</div>
-		<div id='' class='d-none everythingElse'>
-			<div class='fw-bold text-center'>
-				Market 
-				<span id='marketCaption'>
-					(<span id='marketSize'></span>/<span id='maxMarket'></span>)
-				</span>
 				
-			</div>
-			<div class='fw-bold text-center'>
-				<button id='refresh' class='ms-3 btn btn-outline-danger  ps-5 pe-5 p-3 m-2'>reload (<span id='reloads'></span>)</button>
-			</div>
-			<div id='' class='text-center'><span id='clicks'></span> clicks</div>
+				
+			<div id='' class='d-none everythingElse'>
+				<div class='text-center'>
+					<img src='img2/marketLimit.png' height='32' width='32'>
+				</div>
+				<div class='fw-bold text-center'>
+					Market 
+					<span id='marketCaption'>
+						<span id='marketSize'></span>/<span id='maxMarket'></span>
+						
+					</span>
+					
+				</div>
+				<div id='reloadDiv' class='fw-bold text-center'>
+					<button id='refresh' class='ms-3 btn btn-outline-danger
+						ps-5 pe-5 p-3 m-2'>
+						<div>
+							<img src='img2/reloads.png' height='32' width='32'>
+						
+						</div><div>
+							(<span id='reloads'></span>)
+						</div>
+					</button>
+				</div>
+				<div id='' class='text-center'>
+					<div><img src='img2/clicks.png' height='32' width='32'></div>
+					<div><span id='clicks'></span></div>
+					
+				
+				</div>
 
-			<div id='market' class='text-center'></div>
-			<div id='' class='text-center mt-5'>
-				<button id='restart' class='btn btn-outline-warning form-control p-3 d-none'>restart (<span id='restarts'></span>)</button>
+				<div id='market' class='text-center'></div>
+				<div id='' class='text-center mt-5'>
+					<button id='restart' class='btn btn-outline-primary form-control p-3 d-none'>
+					<div>
+						<img src='img2/restarts.png' height='32' width='32'>
+					</div><div>
+						(<span id='restarts'></span>)
+					</div>
+					</button>
+				</div>
 			</div>
+			<div class='mt-5' style='clear:left; text-align:center;'>
+				<button id='show-help' class='btn btn-link  show'>[ help ]</button>
+			</div>
+			
+			
+		</div><div id='help' class='d-none windows'>
+			<div class='text-center'>
+				<button id='show-game' class='btn btn-link show'>[ back ]</button>
+			</div>
+			<div class='text-center'>Hey! <span class='fw-bold'><span class='text-decoration-underline'>Thanks</span> for trying the game.</span> Here's some help to get you situationed:</div>
+			<div class='fw-bold mt-3'>
+				Winning 
+			</div><div class='ms-3'>
+				You win the game if you get <img src='img2/available.png'> to 20. It's harder than it sounds!
+			</div><div class='ms-3'>
+				Alternatively, you win if you have a card in your tableau with a <span class='fw-bold'>Do:</span> 
+				that says 'win the game' and you fulfill its <span class='fw-bold'>When:</span> condition.
+			</div><div class='fw-bold mt-3'>
+				Playing The Game
+			</div><div class='ms-3'>
+				First, click the main button with the <img src='img2/available.png'> icon on it. This will give you a <img src='img2/clicks.png'> that allows you to buy cards in the market.
+			</div><div class='ms-3'>
+				Every card has a <span class='fw-bold'>When:</span> condition that will activate when its in your tableau. When it's activated, it will then do whatever its <span class='fw-bold'>Do:</span> is.
+			</div><div class='ms-3'>
+				The tricky thing is you don't have much resources. You lose a <img src='img2/available.png'> each time you click the button to get more  <img src='img2/clicks.png'> to buy more cards. 
+			</div><div class='ms-3'>
+				And you only have so many cards that can fit in your market. (<img src='img2/marketLimit.png'>) Same thing with your tableau! (<img src='img2/tableauLimit.png'>) 
+			</div><div class='ms-3'>
+				But the cards you buy give you more of these resources! But only if you fulfill its <span class='fw-bold'>When:</span> condition.
+			</div><div class='ms-3'>
+				Some of the cards do weird stuff! 
+			</div><div class='ms-3'>
+				Like instead of giving you resources, they convert resources you already have to other resources. Like ( <img src='img2/available.png'> -> 4 <img src='img2/clicks.png'> ) will trade 1 of your <img src='img2/available.png'> for 4 <img src='img2/clicks.png'> but be careful! Don't run out of <img src='img2/available.png'>!
+			</div><div class='ms-3'>
+				Some cards only activate when cards in your tableau are destroyed. How does that happen?!? And some cards you can't buy? They just give out penalties? What the...!
+			</div><div class='ms-3'>
+				Anyways, try not to worry too much about every little detail. Just have some fun and don't worry if you lose. It's how you play the game!
+			</div>			
 		</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src='https://code.jquery.com/jquery-3.6.0.js'></script>

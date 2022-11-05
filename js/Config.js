@@ -6,9 +6,16 @@ class Config {
 		'market-draw', 'convert', 'wipe', 
 		'destroy', 'win'
 	];
+	audio = [];
+	audioOn = false;
+	audioFiles = ['clickButton', 'increment', 'decrement', 
+		'market-buy', 
+		'market-refresh',   
+		'market-draw', 'convert', 
+		'destroy', 'win',  'loss'];
 	cardsChecked = [];	
 	checking = null;
-	checkingDelay = 250;
+	checkingDelay = 400;
 	defaultDistributedCardTypes = ['clicks', 'available', 'reloads', 'marketLimit'];
 	defaultStock = [
 		0, 10, 5, 
@@ -32,7 +39,7 @@ class Config {
 		captions: [
 			'click button', '+',  '-', 
 			'buy', 'discard card from market', 'refresh market',  
-			'draw a new card into the market', 'convert', 'wipe the tableau', 
+			'draw a new card into the market', '', 'wipe the tableau', 
 			null, 'win the game',
 		],
 		chances: [
@@ -48,10 +55,10 @@ class Config {
 	
 	when = {
 		captions: [
-			'button is clicked', 'incrementing ', 'decrementing ', 
-			'card is bought', 'card is discarded from market', 'market is refreshed', 
-			'a new card is drawn to the market', 'converting', 'wiping the tableau',
-			'a card is destroyed', 'winning the game',
+			'the button is clicked', '+', '-', 
+			'a card is bought', 'a card is discarded from market', 'the market is refreshed', 
+			'a new card is drawn to the market', '', 'wiping the tableau',
+			'a card in the tableau is destroyed', 'winning the game',
 		],
 		chances: [
 			1, 3, 3, 
@@ -65,11 +72,17 @@ class Config {
 	
 	
 	constructor(){
+	
 		console.log('Integrity check: ', 
 			 this.when.captions.length == this.watDo.captions.length, 
 			 this.when.chances.length == this.watDo.chances.length, 
 			 this.when.captions.length == this.watDo.chances.length,
 			this.actions.length == this.when.captions.length);
+		for (let filename of this.audioFiles){
+			this.audio[filename] = new Audio('mp3/' + filename + '.mp3');
+			//this.audio[filename].play();
+			//console.log('playing filename:' + filename, this.audio[filename]);
+		}
 		let whenSum = 0, doSum = 0;
 		for (let i in this.when.chances){
 			whenSum += this.when.chances[i];
@@ -90,20 +103,31 @@ class Config {
 			return;
 		}
 		this.stock[this.types.indexOf(from)]--;
-		this.stock[this.types.indexOf(to)] += quantity;
+		this.stock[this.types.indexOf(to)] += quantity;		
+		game.playAudio('convert');
+		ui.refresh();
 		game.doCheck('convert', from, to);
 		
 	}
   
 	decrement(name, quantity){
-		this.stock[this.types.indexOf(name)] -= quantity;
-		
+		this.stock[this.types.indexOf(name)] -= quantity;		
+		game.playAudio('decrement');
 		game.doCheck('decrement', name, null);
 	}
 	
 	increment(name, quantity){
-		this.stock[this.types.indexOf(name)] += quantity;		
+		let idArr = { available: 'clickButtonDiv', 
+			marketLimit: 'maxMarket', reloads: 'reloadDiv',
+			tableauLimit: 'tableauLimit' }
+			
+		
+		this.stock[this.types.indexOf(name)] += quantity;				
+		game.playAudio('increment');
+		ui.refresh();
+		ui.popPop(idArr[name]);
 		game.doCheck('increment', name, null);
+		
 	}
 	
 	reset(){

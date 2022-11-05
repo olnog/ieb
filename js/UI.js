@@ -13,7 +13,8 @@ class UI{
 	$("#destroyed").html(config.stock[config.types.indexOf('destroyed')]);
 	$("#winAt").html(AUTO_WIN_AT);
 	$("#tableauLabel").removeClass('fs-4');
-	$("#tableauLabel").removeClass('text-decoration-underline');
+	$("#tableauLabel").removeClass('text-decoration-underline');	
+	$("#audioOn").prop('checked', config.audioOn);
 	if (config.tableau.length >= config.stock[config.types.indexOf('tableauLimit')]){
 		$("#tableauLabel").addClass('fs-4');
 		$("#tableauLabel").addClass('text-decoration-underline');
@@ -90,15 +91,15 @@ class UI{
 	fetchCardResourceRef(condition, resources, quantity, which){
 		let relevant = ['increment', 'decrement'], txt = '';			
 		if (which == 'do' && condition == 'convert'){
-			txt += " (" + resources[0] + " -> " + quantity + " " + resources[1] + ")";
+			txt += " <img src='img2/" + resources[0] + ".png'> -> " + quantity + " <img src='img2/" + resources[1] + ".png'>";
 		} else if (which == 'condition' && condition == 'convert'){
-			txt += " (" + resources[0] + " -> " + resources[1] + ")";
+			txt += " <img src='img2/" + resources[0] + ".png'> -> <img src='img2/" + resources[1] + ".png'>";
 		}
 		if (relevant.includes(condition)){						
 			if (which == 'do'){
-				txt =   "1 ";
+				txt =   "";
 			}
-			txt += resources[0] ;						
+			txt += "<img src='img2/" + resources[0]  + ".png'>";						
 		}	
 		return txt;
 	}
@@ -107,27 +108,31 @@ class UI{
 		let card = market.cards[cardID];
 		let disabledClass = '', doClass = '', whenClass = '', winClass = '';
 		if (game.matchWhenInTableau(card.watDo, card.doResources)){
-			doClass = ' text-decoration-underline ';
+			doClass = ' important ';
 		}
 		if (card.watDo == 'win'){
 			winClass = ' win ';
 		}
 
 		if (card.when == 'convert' && game.canTheyConvert(card.whenResources[0], card.whenResources[1])){
-			whenClass = ' fw-bold ';
+			whenClass = ' important ';
 		} else if ((card.when == 'increment' || card.when == 'decrement') 
 			&& game.canThey(card.when, card.whenResources[0])){
-			whenClass = ' fw-bold ';
+			whenClass = ' important ';
 		} else if (card.when != 'increment' && card.when != 'decrement' && card.when != 'convert' 
 			&& game.doTheyOwnDo(card.when)){
-			whenClass = ' fw-bold ';
+			whenClass = ' important ';
 		}
 		let html = "<div class='cardDiv p-3'>";
-		html += "<div class='text-center mb-3'>Cost: " + card.cost + "</div>";		
-		html += "<div class='" + whenClass + "'> When " + config.when.captions[config.actions.indexOf(card.when)] 
+		html += "<div class='text-center mb-3'>Cost: " + card.cost 
+		
+		+ "<img src='img2/clicks.png'></div>";		
+		html += "<div class='fw-bold mt-3'>When:</div>"
+		html += "<div class='" + whenClass + "'> " + config.when.captions[config.actions.indexOf(card.when)] 
 		html += this.fetchCardResourceRef(card.when, card.whenResources, card.quantity, 'condition');
-		html += ":</div>";
-		html += "<div class='ms-3 " + doClass + " " + winClass + "'>" + config.watDo.captions[config.actions.indexOf(card.watDo)] 
+		html += "</div>";
+		html += "<div class='fw-bold mt-3'>Do:</div>"
+		html += "<div class='ms-3" + doClass + " " + winClass + "'>" + config.watDo.captions[config.actions.indexOf(card.watDo)] 
 		html += this.fetchCardResourceRef(card.watDo, card.doResources, card.quantity, 'do');
 		html += "</div>";	
 			
@@ -159,7 +164,7 @@ class UI{
 	getAllDoForCondition(ogCard){
 		let html = '';
 		for (let cardID in config.tableau){
-			let card = config.tableau[cardID];			
+			let card = config.tableau[cardID], winClass = '';			
 			if (card.when != ogCard.when || 
 				((card.when == 'increment' || card.when == 'decrement') 
 				&& card.whenResources[0] != ogCard.whenResources[0]) 
@@ -167,10 +172,20 @@ class UI{
 				&& card.whenResources[0] != ogCard.whenResources[0] && card.whenResources[1] != ogCard.whenResources[1])){
 				continue;
 			}
-			html += "<div>" + config.watDo.captions[config.actions.indexOf(card.watDo)] 
+			if (card.watDo == 'win'){
+				winClass = ' win ';
+			}
+			html += "<div class='" + winClass + "' >" + config.watDo.captions[config.actions.indexOf(card.watDo)] 
 				+ " " + this.fetchCardResourceRef(card.watDo, card.doResources, card.quantity, 'do') + "</div>";
 			
 		}
 		return html;
+	}
+	
+	popPop(id){
+		$("#" + id).addClass('checking');
+		setTimeout(function(){
+			$("#" + id).removeClass('checking');
+		}, config.checkingDelay);
 	}
 }

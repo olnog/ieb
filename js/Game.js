@@ -21,16 +21,19 @@ class Game{
 				console.log('check -> do: ' + card.watDo, which, resourceType, resourceTo);
 				console.log(card);
 				checking = true;
-				config.cardsChecked.push(cardID);			
+				config.cardsChecked.push(cardID);				
 				this.doFromCheckCondition(card);
+				
 				if (config.cardsChecked.length == config.tableau.length){
 					config.resetCardsChecked();
 				}
 			}
 			
 		}
+		console.log(checking);
 		if (checking){
 			config.finishCheckingCondition = setTimeout(function(){
+				console.log('refresh');
 				ui.refresh();				
 			}, config.checkingDelay);
 		}
@@ -71,6 +74,9 @@ class Game{
 	  config.stock[config.types.indexOf('available')]--;
 	  config.stock[config.types.indexOf('clicks')]++;
 	  this.checkEnd();
+	  ui.refresh();
+	  ui.popPop('clicks');	  
+	  this.playAudio('clickButton')
 	  game.doCheck('clickButton', null, null);
 	}
 		
@@ -152,14 +158,17 @@ class Game{
 			config.distributedCardTypes.push('destroyed');
 		}
 		if (n > 0){
+			config.audio['destroy'].play();
 			config.stock[config.types.indexOf('destroyed')]++;
 			game.doCheck('destroy', null, null);			
 		}
 	}
 	
 	lose(why){
+		this.playAudio('loss')
 		alert('You lost because you ran out of ' + why + ". How many losses can you get?");
 		config.stock[config.types.indexOf('losses')]++;
+		
 		if (!config.distributedCardTypes.indexOf('losses')){
 			config.distributedCardTypes.push('losses');
 		}
@@ -186,6 +195,14 @@ class Game{
 		return false;		
 	}
 	
+	playAudio(filename){
+		if (!config.audioOn){
+			return;
+		}
+		config.audio[filename].play();
+	}
+	
+	
 	restart(clicked){
 		if (clicked != null 
 			&& config.stock[config.types.indexOf('restarts')] < 1){
@@ -201,6 +218,7 @@ class Game{
 	}
 	
 	win(why, whenIs){
+		this.playAudio('win');
 		let reasons = { increment: 'incremented', convert: 'converted', destroyed: 'destroyed a card'};
 		if (why == 'available'){
 			alert("You won because you increased available past " + AUTO_WIN_AT + ". How many wins can you get?");
@@ -211,6 +229,8 @@ class Game{
 		if (!config.distributedCardTypes.indexOf('wins')){
 			config.distributedCardTypes.push('wins');
 		}
+		
+		
 		this.restart();
 	}
 	

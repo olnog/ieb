@@ -5,7 +5,8 @@ class Market {
 		if (card.constructor.name == 'Penalty' || card.cost > config.stock[0] 
 			|| config.tableau.length >= config.stock[config.types.indexOf('tableauLimit')]){
 			return;
-		}
+		}		
+		game.playAudio('market-buy');
 		config.stock[config.types.indexOf('clicks')] -= card.cost;
 		config.tableau.push(card);
 		this.cards.splice(marketID, 1);
@@ -24,6 +25,8 @@ class Market {
 			&& !config.distributedCardTypes.includes('restarts')){
 			config.distributedCardTypes.push('restarts');			
 		}
+		ui.refresh();		
+		ui.popPop('clicks');
 		game.doCheck('market-buy', null, null);	
 	}
 	
@@ -76,10 +79,15 @@ class Market {
 		return true;
 	}
 	
-	draw(){		
+	draw(){	
+		console.log('draw');
 		if (this.cards.length >= config.stock[config.types.indexOf('marketLimit')]){
 			return;
 		}
+		ui.popPop();
+		
+		game.playAudio('market-draw');
+		ui.refresh();
 		this.cards.push(new Card());
 		game.doCheck('market-draw', null, null);
 	}
@@ -107,11 +115,13 @@ class Market {
 	}
 	
 	refresh(clicked){
-		if (clicked != null){
+		if (clicked != null){			
+			game.playAudio('market-refresh');
 			if (config.stock[config.types.indexOf('reloads')] > 0){
-				config.decrement('reloads', 1);
+				config.stock[config.types.indexOf('reloads')]--;
+				
 			} else {
-				config.decrement('available', 1);
+				config.stock[config.types.indexOf('available')]--;				
 			}
 		}
 		this.discardAll();
