@@ -2,20 +2,35 @@ class Market {
 	cards = null;
 	buy(marketID){
 		let card = this.cards [marketID];
-		if (card.constructor.name == 'Penalty' || card.cost > config.stock[0] 
+		if (card.constructor.name == 'Penalty' || card.cost > config.stock[config.types.indexOf('available')] 
 			|| config.tableau.length >= config.stock[config.types.indexOf('tableauLimit')]){
 			return;
-		}		
-		game.playAudio('market-buy');
+		}					
 		config.stock[config.types.indexOf('clicks')] -= card.cost;
+		this.claimOrBuy(marketID);		
+		
+		ui.popPop('clicks');
+		game.doCheck('market-buy', null, null);	
+	}
+	
+	claim(marketID){
+		let card = this.cards [marketID];
+		if (config.stock[config.types.indexOf('destroyed')] < 1){
+			return;
+		}
+		this.claimOrBuy(marketID);
+		config.stock[config.types.indexOf('destroyed')] --;
+		ui.popPop('destroyed');
+		game.doCheck('market-claim', null, null);	
+	}
+	
+	claimOrBuy(marketID){
+		let card = this.cards [marketID];
+		game.playAudio('market-buy');
 		config.tableau.push(card);
 		this.cards.splice(marketID, 1);
 		if (this.cards.length < 1){
 			this.refresh();
-		}
-		if (game.doTheyOwnDo('market-draw') && !config.distributedCardTypes.includes('marketLimit')){
-			//config.distributedCardTypes.push('marketLimit');
-			//config.distributedCardTypes.push('initMarket');
 		}
 		if (config.tableau.length > 0 && !config.distributedCardTypes.includes('tableauLimit')){
 			config.distributedCardTypes.push('tableauLimit');
@@ -25,11 +40,8 @@ class Market {
 			&& !config.distributedCardTypes.includes('restarts')){
 			config.distributedCardTypes.push('restarts');			
 		}
-		ui.refresh();		
-		ui.popPop('clicks');
-		game.doCheck('market-buy', null, null);	
+		ui.refresh();
 	}
-	
 	checkPenalties(when, from, to){
 		
 		let howManyPenalties = this.howManyPenaltyCards();
@@ -80,7 +92,6 @@ class Market {
 	}
 	
 	draw(){	
-		console.log('draw');
 		if (this.cards.length >= config.stock[config.types.indexOf('marketLimit')]){
 			return;
 		}
@@ -103,15 +114,16 @@ class Market {
 	}
 	
 	matchDo(watDo){
+		let n = 0;
 		for (let card of this.cards){
 			if (card.constructor.name == 'Penalty'){
 				continue;
 			}
 			if (card.watDo == watDo){
-				return true;
+				n++;
 			}
 		}
-		return false;
+		return n;
 	}
 	
 	refresh(clicked){
@@ -125,12 +137,12 @@ class Market {
 			}
 		}
 		this.discardAll();
-		let penaltyGenerated = randNum(config.tableau.length, config.stock[config.types.indexOf('tableauLimit')]) == config.tableau.length ;
+		let penaltyGenerated = false; //randNum(config.tableau.length, config.stock[config.types.indexOf('tableauLimit')]) == config.tableau.length ;
 		if (config.tableau.length < 1){
 			penaltyGenerated = false;
 		}
 		if (penaltyGenerated){
-			this.cards.push(new Penalty);
+			//this.cards.push(new Penalty);
 		}
 		let numOfCards = config.stock[config.types.indexOf('initMarket')];
 		if (config.stock[config.types.indexOf('initMarket')] > config.stock[config.types.indexOf('marketLimit')]){
@@ -145,6 +157,7 @@ class Market {
 				//}
 			}
 		}
+		ui.refresh();
 		game.doCheck('market-refresh', null, null);	  
 	}
 }

@@ -2,6 +2,7 @@
 
 $(document).on('click', 'button', function(e){
 	config.resetCardsChecked();
+	config.numOfTurns++;
 });
 
 $(document).on('click', '#audioOn', function(e){
@@ -11,6 +12,10 @@ $(document).on('click', '#audioOn', function(e){
 
 $(document).on('click', '.buy', function(e){	
 	market.buy(e.target.id.split('-')[1], null);	
+})
+
+$(document).on('click', '.buy', function(e){	
+	market.claim(e.target.id.split('-')[1], null);	
 })
 
 $(document).on('click', '#clickButton', function(e){	
@@ -40,6 +45,6 @@ $(document).on('click', '#wipe', function(e){
 });
 
 $(document).on('click', 'button', function(e){
-	config.numOfTurns++;
-  ui.refresh()
+	
+  //ui.refresh()
 })

@@ -2,23 +2,23 @@ class Game{
 	constructor(){
 
 	}	
-	checkCondition(which, resourceType, resourceTo){
+	checkCondition(when, resourceType, resourceTo){
 		this.checkEnd();
 		if (config.tableau.length > 0){
-			//console.log('check', which, resourceType, resourceTo);
+			//console.log('check', when, resourceType, resourceTo);
 		}
 		let checking = false;
 		for (let cardID in config.tableau){
 			let card = config.tableau[cardID];
 			//got an error message when I won. not sure if its because of the win or because there was another do attached to the when
-			//console.log(config.cardsChecked.includes(cardID), card.when != which, card.when, which );
-			if (config.cardsChecked.includes(cardID) || card.when != which){				
+			//console.log(config.cardsChecked.includes(cardID), card.when != when, card.when, when );
+			if (config.cardsChecked.includes(cardID) || card.when != when){				
 				continue;			
 			}
 			if (resourceType == null 
 				|| (resourceType == card.whenResources[0] && resourceTo == null) 
 				|| (resourceType == card.whenResources[0] && resourceTo == card.whenResources[1])){
-				console.log('check -> do: ' + card.watDo, which, resourceType, resourceTo);
+				console.log('check -> do: ' + card.watDo, when, resourceType, resourceTo);
 				console.log(card);
 				checking = true;
 				config.cardsChecked.push(cardID);				
@@ -26,14 +26,23 @@ class Game{
 				
 				if (config.cardsChecked.length == config.tableau.length){
 					config.resetCardsChecked();
+					console.log("LETS DO IT AGAIN!");		
+					if (card.watDo == 'increment'){
+						this.checkCondition(card.watDo, card.whenResources[0], null);
+					} else if (card.watDo == 'convert'){
+						this.checkCondition(card.watDo, card.whenResources[0], card.whenResources[1]);
+					} else {
+						this.checkCondition(card.watDo, null, null);
+					}
+					
+					
 				}
 			}
 			
-		}
-		console.log(checking);
+		}		
 		if (checking){
 			config.finishCheckingCondition = setTimeout(function(){
-				console.log('refresh');
+				
 				ui.refresh();				
 			}, config.checkingDelay);
 		}
@@ -70,15 +79,7 @@ class Game{
 		}
 	}
 	
-	clickButton(){	  
-	  config.stock[config.types.indexOf('available')]--;
-	  config.stock[config.types.indexOf('clicks')]++;
-	  this.checkEnd();
-	  ui.refresh();
-	  ui.popPop('clicks');	  
-	  this.playAudio('clickButton')
-	  game.doCheck('clickButton', null, null);
-	}
+
 		
 
 		
@@ -106,6 +107,16 @@ class Game{
 			
 		}
 		return false;
+	}
+	
+	clickButton(){	  
+	  config.stock[config.types.indexOf('available')]--;
+	  config.stock[config.types.indexOf('clicks')]++;
+	  this.checkEnd();
+	  ui.refresh();
+	  ui.popClass('clicks');	  
+	  this.playAudio('clickButton')
+	  game.doCheck('clickButton', null, null);
 	}
 	
 	doCheck(condition, name, to){
@@ -157,8 +168,8 @@ class Game{
 		if (n > 0 && !config.distributedCardTypes.includes('destroyed')){
 			config.distributedCardTypes.push('destroyed');
 		}
-		if (n > 0){
-			config.audio['destroy'].play();
+		if (n > 0){			
+			this.playAudio('destroy');
 			config.stock[config.types.indexOf('destroyed')]++;
 			game.doCheck('destroy', null, null);			
 		}
@@ -219,7 +230,7 @@ class Game{
 	
 	win(why, whenIs){
 		this.playAudio('win');
-		let reasons = { increment: 'incremented', convert: 'converted', destroyed: 'destroyed a card'};
+		let reasons = { increment: 'incremented', convert: 'converted', destroy: 'got destroyed'};
 		if (why == 'available'){
 			alert("You won because you increased available past " + AUTO_WIN_AT + ". How many wins can you get?");
 		} else if (why == 'when'){
@@ -243,7 +254,7 @@ class Game{
 		if (clicked != null){			
 			config.decrement('wipes', 1);
 		}
-		
+		ui.refresh();
 	}
   
 }

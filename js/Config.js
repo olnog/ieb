@@ -4,7 +4,7 @@ class Config {
 		'clickButton', 'increment', 'decrement', 
 		'market-buy', 'market-discardCard', 'market-refresh',   
 		'market-draw', 'convert', 'wipe', 
-		'destroy', 'win'
+		'destroy', 'win', 'market-claim',
 	];
 	audio = [];
 	audioOn = false;
@@ -21,7 +21,7 @@ class Config {
 		0, 10, 5, 
 		5, TABLEAU_LIMIT, 3, 
 		1, 0, 0,
-		0, 0,
+		0, 0, 
 	];
 	distributedCardTypes = null;
 	finishCheckingCondition = null;	
@@ -37,16 +37,16 @@ class Config {
 		
 	watDo = {
 		captions: [
-			'click button', '+',  '-', 
+			"click the <img src='img2/available.png' > button", '+',  '-', 
 			'buy', 'discard card from market', 'refresh market',  
 			'draw a new card into the market', '', 'wipe the tableau', 
-			null, 'win the game',
+			null, 'win the game', null,
 		],
 		chances: [
-			10, 60, 40, 
-			40, 40, 40, 
-			5, 10, 10,
-			10, 1,
+			5, 10, 10, 
+			10, 10, 10, 
+			10, 10, 10,
+			10, 10, 10,
 			
 		],
 		probabilities: [],
@@ -55,16 +55,16 @@ class Config {
 	
 	when = {
 		captions: [
-			'the button is clicked', '+', '-', 
-			'a card is bought', 'a card is discarded from market', 'the market is refreshed', 
+			"the <img src='img2/available.png' > button is clicked", '+', '-', 
+			'a card is bought', 'a card is discarded from market', "the <img src='img2/reloads.png' > button is clicked", 
 			'a new card is drawn to the market', '', 'wiping the tableau',
-			'a card in the tableau is destroyed', 'winning the game',
+			'a card in the tableau is destroyed', 'winning the game', 'claiming a card in the market',
 		],
 		chances: [
-			1, 3, 3, 
-			3, 3, 3, 
-			3, 3, 1,
-			1, 1,
+			10, 10, 10, 
+			10, 10, 10, 
+			10, 10, 10,
+			5, 10, 10,
 		],
 		probabilities: [],
 		probSum: null,

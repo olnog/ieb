@@ -28,8 +28,8 @@ class Card{
 	
 	checkDo(watDoID, when, pass){
 		
-		let banned = ['market-buy', 'destroy', 
-			'market-discardCard', 'decrement', 'market-refresh', 'wipe'];
+		let banned = ['market-buy', 'destroy', 'decrement', 
+			'market-claim', 'market-discardCard', 'market-refresh', 'wipe'];
 		
 		let poss = config.actions[watDoID];		
 		//console.log('checkDo', poss, when, config.numOfTurns, pass);
@@ -41,11 +41,25 @@ class Card{
 			return false;
 		}
 		*/
+		if (poss == 'increment' && this.doResources[0] == 'available' 
+			&& when == 'clickButton'){
+			return false;
+		}
 		if (poss == 'win' && (when == 'market-buy' || when == 'market-draw' 
-			|| when == 'clickButton' || when == 'market-refresh' || when == 'destroy')){
+			|| when == 'clickButton' || when == 'market-refresh' ||  when == 'increment')){
 			return false;
 		}
 		if (when == 'market-refresh' && poss == 'increment' && this.doResources[0] == 'reloads'){
+			return false;
+		}
+		if (when == 'market-refresh' && poss == 'increment' 
+			&& this.doResources[0] == 'available' && randNum(1,4) > 1){
+			return false;
+		}
+		if (market.cards.length > 0 && market.matchDo(poss) == market.cards.length){
+			return false;
+		}
+		if (when == 'market-refresh' && poss == 'clickButton' && randNum(1, 10) > 1){
 			return false;
 		}
 		/*
@@ -88,7 +102,10 @@ class Card{
 	checkWhen(whenID, pass){
 		let always = ['clickButton', 'market-draw', 'market-refresh', 'card-buy'];
 		let banned = ['market-discardCard', 'decrement', 'win', 'wipe'];
-		let poss = config.actions[whenID];				
+		let poss = config.actions[whenID];
+		if (poss =='market-claim' && config.stock[config.types.indexOf('destroyed')] < 1){
+			return false;
+		}
 		/*
 		if (poss == 'convert' && !game.canTheyConvert(this.whenResources[0], this.whenResources[1])){
 			return false;
@@ -116,26 +133,26 @@ class Card{
 	genWatDo(when, pass){
 		let actionID = null;
 		while (actionID == null){
-			let rand = randNum(1, config.actions.length - 1);		
+			let rand = randNum(1, config.watDo.probSum);		
+			/*
 			let poss = config.actions[rand];
 			if (when != poss && this.checkDo(rand, when, pass)){				
 				actionID = rand;			
-			}			
-			
-			/*
+			}						
+			*/			
 			for (let i in config.watDo.probabilities){
 				let probability = config.watDo.probabilities[i];								
 				let poss = config.actions[i];				
-				console.log('watDo: ' + poss);
+				//console.log('watDo: ' + poss);
 				if (rand > probability){					
 					continue;
-				}				
-				if (when != poss && this.checkDo(i, when, pass)){				
+				}
+				if ((i == 0 || rand > config.watDo.probabilities[i - 1]) 
+					&& when != poss && this.checkDo(i, when, pass)){				
 					actionID = i;
 					break;
 				}								
-			}
-			*/
+			}			
 		}
 		return config.actions[actionID];		
 	}
@@ -144,28 +161,28 @@ class Card{
 		let actionID = null;				
 		while (actionID == null){
 			
-			//let rand = randNum(1, config.when.probSum);		
+			let rand = randNum(1, config.when.probSum);		
+			/*
 			let rand = randNum(1, config.actions.length - 1);		
 			let poss = config.actions[rand];
 			if (this.checkWhen(rand, pass)){				
 				actionID = rand;			
 			}			
-			/*
-			
+			*/			
 			for (let i in config.when.probabilities){
 				let probability = config.when.probabilities[i];								
 				let poss = config.actions[i];
-				console.log('when: ' + poss);
-				if (rand > probability){
-					
+				//console.log('when: ' + poss);
+				if (rand > probability){				
 					continue;
 				}				
-				if (this.checkWhen(i, pass)){				
-					whenID = i;
+				if ((i == 0 || rand > config.watDo.probabilities[i - 1]) 
+					&& this.checkWhen(i, pass)){				
+					actionID = i;
 					break;
 				}								
 			}
-			*/
+			
 		}		
 		return config.actions[actionID];
 	}
