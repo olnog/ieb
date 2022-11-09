@@ -6,7 +6,7 @@ class UIMarket {
 		if (config.stock.get('destroyed') < 1){
 			buyFormControl = ' form-control ';
 		}
-		
+			
 		if (config.stock.get('available') < card.cost){
 			noBuyClass = ' noBuy ';
 		}
@@ -56,14 +56,13 @@ class UIMarket {
 			
 		
 		if (config.stock.get('available') < card.cost 
-			//|| config.tableau.length >= config.stock.get('tableauLimit')
-			){
+			|| config.tableau.cards.length >= config.stock.get('tableauLimit')){
 			disabledClass = ' disabled ';
 		}
 		html += "<div>"
 		if (config.stock.get('destroyed') > 0){
 			html += "<button id='claim-" + cardID 
-				+ "' class='claim btn-lg btn btn-warning'>claim</button>";
+				+ "' class='claim btn-lg btn btn-warning' " + disabledClass + ">claim</button>";
 		}
 		html += "<button id='buy-" + cardID + "' class='buy btn btn-lg btn-success " + buyFormControl + " ' " 
 			+ disabledClass + ">buy</button>";

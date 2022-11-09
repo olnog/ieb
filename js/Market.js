@@ -3,8 +3,7 @@ class Market {
 	buy(marketID){
 		let card = this.cards [marketID];		
 		if (card.cost > config.stock.get('available')
-			//|| config.tableau.length >= config.stock[config.types.indexOf('tableauLimit')]
-			){
+			|| config.tableau.length >= config.stock.get('tableauLimit')){
 			return;
 		}					
 		config.stock.set('available', config.stock.get('available') - card.cost);		
@@ -15,7 +14,8 @@ class Market {
 	
 	claim(marketID){
 		let card = this.cards [marketID];
-		if (config.stock.get('destroyed') < 1){
+		if (config.stock.get('destroyed') < 1
+			|| config.tableau.length >= config.stock.get('tableauLimit') ){
 			return;
 		}
 		this.claimOrBuy(marketID);
@@ -34,11 +34,8 @@ class Market {
 			this.refresh();
 		}
 		if (config.tableau.cards.length > 0 && !config.stock.distributed.includes('tableauLimit')){
-			//config.distributedCardTypes.push('tableauLimit');
+			config.stock.distributed.push('tableauLimit');
 			config.stock.distributed.push('wipes');
-		}
-		if (config.tableau.cards.length / config.stock.get('tableauLimit') > .5 
-			&& !config.stock.distributed.includes('restarts')){
 			config.stock.distributed.push('restarts');			
 		}
 		ui.refresh();
@@ -55,8 +52,8 @@ class Market {
 	
 	discardAll(reset){
 		this.cards = [];
-		if (reset == null){
-			game.doCheck('market-discardAll', null, null);
+		if (reset != null){ //this is fucking up my loop count
+			//game.doCheck('market-discardAll', null, null);
 		}
 	}
 	
@@ -82,7 +79,9 @@ class Market {
 	}
 
 	fetchNew(){				
+		console.log('fetchNew');
 		let bad = true, poss = null;
+		config.passes = 0;
 		while(bad){
 			bad = false;	
 			poss = new Card();
@@ -100,6 +99,10 @@ class Market {
 					&& poss.doResources[0] == card.doResources[0] && poss.doResources[1] == card.doResources[1]){
 					bad = true;
 				}
+			}
+			config.passes++;
+			if (config.passes > 100){ // fuck it, it can't be that bad, can it?
+				bad = false;
 			}
 		}
 		config.history.when.push(poss.when + '-' + String(poss.whenResources[0]) + '-' + String(poss.whenResources[1]));
@@ -137,10 +140,7 @@ class Market {
 		
 
 		this.discardAll();		
-		let numOfCards = config.stock.get('initMarket');
-		if (config.stock.get('initMarket') > config.stock.get('marketLimit')){
-			numOfCards = config.stock.get('marketLimit');
-		}
+		let numOfCards = config.stock.get('marketInit');
 		for (let i = this.cards.length; i < numOfCards; i++){		  			
 			this.cards.push(this.fetchNew());					
 		}

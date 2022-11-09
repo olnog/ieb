@@ -25,7 +25,9 @@ class Config {
 	historySize = 10;
 	loopCheck = null;
 	loops = 0;
+	minNumOfTurnsBeforeWin = 3;
 	numOfTurns = 0;	
+	passes = 0;
 	stock = new Stock();		
 	tableau = new Tableau();	
 		

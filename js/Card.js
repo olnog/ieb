@@ -9,9 +9,8 @@ class Card{
 	
 	constructor (){
 		let max 
-			= Math.round((config.stock.get('clicks')
-			+ (config.stock.get('available') - 4) 
-			+ config.tableau.cards.length) / 3);
+			= ((config.stock.get('available') - 4) 
+			+ config.tableau.cards.length) / 3;
 		
 		this.cost = randNum(1, max);		
 		if (this.cost < 1){
@@ -40,20 +39,20 @@ class Card{
 /*
 		if (market.cards.length == 0){
 			this.cost = 1;
-			this.when = 'clickButton';
+			this.when = 'market-refresh';
 			this.watDo = 'increment';
-			this.doResources[0] = 'available';
+			this.doResources[0] = 'reloads';
 			this.doResources[1] = null;
 			this.whenResources = [null, null];
 		} else if (market.cards.length == 1){
 			this.cost = 1;
-			this.watDo = 'clickButton';
+			this.watDo = 'market-refresh';
 			this.when = 'increment';
 			this.doResources = [null, null];
-			this.whenResources[0] = 'available';
+			this.whenResources[0] = 'reloads';
 			this.whenResources[1] = null;
 		} 
-*/		
+*/	
 	}
 		
 

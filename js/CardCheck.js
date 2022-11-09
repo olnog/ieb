@@ -3,11 +3,12 @@ class CardCheck{
 		let banned = ['clickButton', 'market-buy', 'destroy', 'decrement', 
 			'market-claim', 'market-discardCard', 'market-refresh', 'wipe'];		
 		let poss = config.actions[watDoID];		
-		if (poss == 'convert' && when == 'convert'){
-			console.log(poss, doResources, when, whenResources);
-		}
+
 		if (poss == 'increment' && doResources[0] == 'available' 
 			&& when == 'clickButton'){
+			return false;
+		}
+		if (poss == 'win' && config.numOfTurns <= config.minNumOfTurnsBeforeWin){
 			return false;
 		}
 		if (poss == 'win' && randNum(1, config.tableau.howManyDos(poss, doResources) + 1) == 1 

@@ -22,7 +22,8 @@ class CardGen {
 					continue;
 				}
 				if ((i == 0 || rand > config.watDo.probabilities[i - 1]) 
-					&& (when != poss || (when == poss && when == 'convert')) && this.check.watDo(i, when, doResources, whenResources)){				
+					&& when != poss //|| (when == poss && when == 'convert')) 
+					&& this.check.watDo(i, when, doResources, whenResources)){				
 					actionID = i;
 					break;
 				}								

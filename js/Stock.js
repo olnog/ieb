@@ -3,7 +3,7 @@ class Stock {
 
     defaultQuant = [
 		0, Math.round(AUTO_WIN_AT / 2), 5, 
-		5, TABLEAU_LIMIT, 3, 
+		0, TABLEAU_LIMIT, 3, 
 		1, 0, 0,
 		0, 0, 0,
 	];    
@@ -11,7 +11,7 @@ class Stock {
     quant = [];
     types = [
 		'clicks', 'available', 'reloads', 		
-		'marketLimit', 'tableauLimit', 'initMarket', 
+		'marketLimit', 'tableauLimit', 'marketInit', 
 		'wipes', 'destroyed', 'wins', 
 		'losses', 'restarts', 'loops',
 	];	
@@ -45,7 +45,7 @@ class Stock {
 
 	increment(name, quantity){
 		let idArr = { available: 'clickButtonDiv', 
-			marketLimit: 'maxMarket', reloads: 'reloadDiv',
+			marketInit: 'marketInit', reloads: 'reloadDiv',
 			tableauLimit: 'tableauLimit' }
 			
 		this.set(name, this.get(name) + quantity);
@@ -58,7 +58,7 @@ class Stock {
 	}
 
     reset(){
-        let saveArr = [], saveThis = ['destroyed', 'wins', 'restarts', 'losses'];
+        let saveArr = [], saveThis = ['destroyed', 'wins', 'restarts', 'losses', 'loops'];
 		for (let i in saveThis){			
 			saveArr[i] = this.get(saveThis[i]);
 		}

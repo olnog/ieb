@@ -1,8 +1,9 @@
 class Game{	
 	checkCondition(when, resources){
+		console.log('checkCondition', when, resources);
 		if (config.loops != 0 && config.loops % 3 == 0){
-			console.log('checkCondition', when, resources);
-			console.log(config.loops);
+			
+			//console.log(config.loops);
 			let goingDown = this.checkLoop();
 			if (!goingDown){
 				this.infiniteLoop();
@@ -13,6 +14,7 @@ class Game{
 		if (config.tableau.matchWhen(when, resources)){
 			matchingWhens = config.tableau.fetchMatchingWhens(when, resources);
 		}
+		
 		if (matchingWhens.length < 1){
 			config.checked = [];
 			config.loopCheck = config.stock.quant.slice();
@@ -24,7 +26,7 @@ class Game{
 	}
 	
 	checkEnd(){
-		let noZero = ['available', 'marketLimit', 'tableauLimit'];
+		let noZero = ['available', 'marketInit', 'tableauLimit'];
 		//there could be a potential for the game to continue IF AND ONLY IF there is a way to increment market limit in their tableau.
 		for (let typeName of noZero){
 			if(config.stock.get(typeName) <  1){
@@ -39,7 +41,6 @@ class Game{
 		let goingDown = false;
 		for (let i in config.stock.quant){
 			let quant = config.stock.quant[i];
-			console.log(config.stock.types[i], quant - config.loopCheck[i]);
 			if (quant < config.loopCheck[i] && quant - config.loopCheck[i] <= -2){
 				goingDown = true;
 			}
@@ -72,7 +73,7 @@ class Game{
 	doTheMatchingWhens(matchingWhens){
 		for (let cardID of matchingWhens){
 			let card = config.tableau.cards[cardID];
-			console.log('doTheMatchingWhens', card.watDo);
+			//console.log('doTheMatchingWhens', card.watDo);
 			config.checked.push(cardID);
 			this.doFromCheckCondition(card);
 		}
@@ -82,7 +83,9 @@ class Game{
 	infiniteLoop(){
 		alert("You created an infinite loop! You are a genius!");
 		config.stock.set('loops', config.stock.get('loops') + 1);
-		if (!config.stock.distributed.indexOf('loops')){
+		console.log ("You have " + config.stock.get('loops') + " loops." );
+
+		if (!config.stock.distributed.includes('loops')){
 			config.stock.distributed.push('loops');
 		}
 		this.restart();
@@ -92,7 +95,7 @@ class Game{
 		config.playAudio('loss')
 		alert('You lost because you ran out of ' + why + ". How many losses can you get?");		
 		config.stock.set('losses', config.stock.get('losses') + 1);
-		if (!config.stock.distributed.indexOf('losses')){
+		if (!config.stock.distributed.includes('losses')){
 			config.stock.distributed.push('losses');
 		}
 		this.restart();		
@@ -120,7 +123,7 @@ class Game{
 			alert("You won because the right card in your tableau " + reasons[whenIs] + ". How many wins can you get?");			
 		}		
 		config.stock.set('wins', config.stock.get('wins') + 1);
-		if (!config.stock.distributed.indexOf('wins')){
+		if (!config.stock.distributed.includes('wins')){
 			config.stock.distributed.push('wins');
 		}		
 		this.restart();

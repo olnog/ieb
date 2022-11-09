@@ -16,9 +16,7 @@ class UIRefresh{
         if (config.numOfTurns > 0){
             $(".everythingElse").removeClass('d-none');
         }
-        console.log('why wont loops show', config.stock.get('wins'),
-            config.stock.get('losses'),
-            config.stock.get('loops') )
+
         if (config.stock.get('wins') > 0 
             || config.stock.get('losses') > 0 
             || config.stock.get('loops') > 0 ){
