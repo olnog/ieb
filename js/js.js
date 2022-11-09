@@ -10,8 +10,6 @@ game = new Game()
 console.log('ui');
 ui = new UI()
 market.refresh();
-
-ui.refresh()
 function randNum(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }

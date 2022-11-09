@@ -1,8 +1,22 @@
 
 
+$(document).on('mouseover', 'button', function(e){
+	let triggerArr = ['clickButton', 'refresh', 'restart', 'wipe'];
+	if (triggerArr.includes(e.currentTarget.id)){
+		ui.changeButton(e.currentTarget.id, true);
+	}
+	
+});
+$(document).on('mouseleave', 'button', function(e){
+	let triggerArr = ['clickButton', 'refresh', 'restart', 'wipe'];
+	if (triggerArr.includes(e.currentTarget.id)){
+		ui.changeButton(e.currentTarget.id, false);
+	}
+	
+});
 $(document).on('click', 'button', function(e){
-	config.resetCardsChecked();
 	config.numOfTurns++;
+	
 });
 
 $(document).on('click', '#audioOn', function(e){
@@ -14,12 +28,12 @@ $(document).on('click', '.buy', function(e){
 	market.buy(e.target.id.split('-')[1], null);	
 })
 
-$(document).on('click', '.buy', function(e){	
+$(document).on('click', '.claim', function(e){	
 	market.claim(e.target.id.split('-')[1], null);	
 })
 
 $(document).on('click', '#clickButton', function(e){	
-	game.clickButton();
+	config.clickButton();
 });
 
 $(document).on('click', '.show', function(e){	
@@ -40,11 +54,10 @@ $(document).on('click', '#restart', function(e){
 
 $(document).on('click', '#wipe', function(e){		
 	if (window.confirm('are you sure you want to wipe your tableau?')){
-		game.wipe(true);		
+		config.wipe(true);		
 	}
 });
 
 $(document).on('click', 'button', function(e){
-	
-  //ui.refresh()
+
 })

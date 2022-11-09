@@ -1,0 +1,100 @@
+
+
+@-webkit-keyframes shake {
+    0% { -webkit-transform: translate(4px, 2px) rotate(0deg); } 
+    10% { -webkit-transform: translate(-2px, -4px) rotate(-1deg); }
+    20% { -webkit-transform: translate(-6px, 0px) rotate(1deg); }
+    30% { -webkit-transform: translate(0px, 4px) rotate(0deg); }
+    40% { -webkit-transform: translate(2px, -2px) rotate(1deg); }
+    50% { -webkit-transform: translate(-2px, 4px) rotate(-1deg); }
+    60% { -webkit-transform: translate(-6px, 2px) rotate(0deg); }
+    70% { -webkit-transform: translate(4px, 2px) rotate(-1deg); }
+    80% { -webkit-transform: translate(-2px, -2px) rotate(1deg); }
+    90% { -webkit-transform: translate(4px, 4px) rotate(0deg); }
+    100% { -webkit-transform: translate(2px, -4px) rotate(-1deg); }
+}
+.shake {
+    -webkit-animation-name: shake;
+    -webkit-animation-duration: 0.1s; /* max of .2 */
+    -webkit-transform-origin:50% 50%;
+    -webkit-animation-iteration-count: infinite;
+}
+
+#oldMarket {
+    position: absolute;
+    left: 0pxx;
+}
+
+.buy{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    min-width: 80px;
+}
+.claim {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.noBuy{
+    background-color:lightgrey;
+}
+
+.cardDiv {
+    border:1px black solid;
+    min-height:350px;			
+    width:165px;
+    display:block;
+    margin:5px;
+    float:left;
+    position: relative;
+}
+
+.checking {
+    background-color:lightgrey;
+    border: 1px gold solid;
+    font-weight: bold;
+}
+
+.important {
+    background-color: grey;
+    color: white;
+}
+
+
+.poop {
+    position:relative; /* making the .tooltip span a container for the tooltip text */
+    border-bottom:1px dashed #000; /* little indicater to indicate it's hoverable */
+}
+
+.poop:before {
+    content: attr(data-text); /* here's the magic */
+    position:absolute;
+
+    /* vertically center */
+    top:50%;
+    transform:translateY(-50%);
+
+    /* move to right */
+    right:100%;
+    margin-left:15px; /* and add a small left margin */
+
+    /* basic styles */
+    width:200px;
+    padding:10px;
+    border-radius:10px;
+    background:#000;
+    color: #fff;
+    text-align:center;
+    z-index: 1000;
+    display:none; /* hide by default */
+    }
+
+.poop:hover:before {
+    display:block;
+}
+.win {
+    font-weight: bold;
+    color: #fc881a;
+}

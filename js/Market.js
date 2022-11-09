@@ -1,68 +1,49 @@
 class Market {
 	cards = null;
 	buy(marketID){
-		let card = this.cards [marketID];
-		if (card.constructor.name == 'Penalty' || card.cost > config.stock[config.types.indexOf('available')] 
-			|| config.tableau.length >= config.stock[config.types.indexOf('tableauLimit')]){
+		let card = this.cards [marketID];		
+		if (card.cost > config.stock.get('available')
+			//|| config.tableau.length >= config.stock[config.types.indexOf('tableauLimit')]
+			){
 			return;
 		}					
-		config.stock[config.types.indexOf('clicks')] -= card.cost;
-		this.claimOrBuy(marketID);		
-		
-		ui.popPop('clicks');
+		config.stock.set('available', config.stock.get('available') - card.cost);		
+		this.claimOrBuy(marketID);				
+		ui.popPop('available');
 		game.doCheck('market-buy', null, null);	
 	}
 	
 	claim(marketID){
 		let card = this.cards [marketID];
-		if (config.stock[config.types.indexOf('destroyed')] < 1){
+		if (config.stock.get('destroyed') < 1){
 			return;
 		}
 		this.claimOrBuy(marketID);
-		config.stock[config.types.indexOf('destroyed')] --;
+		config.stock.set('destroyed', config.stock.get('destroyed') - 1);				
+		ui.refresh();
 		ui.popPop('destroyed');
 		game.doCheck('market-claim', null, null);	
 	}
 	
 	claimOrBuy(marketID){
 		let card = this.cards [marketID];
-		game.playAudio('market-buy');
-		config.tableau.push(card);
+		config.playAudio('market-buy');
+		config.tableau.cards.push(card);
 		this.cards.splice(marketID, 1);
 		if (this.cards.length < 1){
 			this.refresh();
 		}
-		if (config.tableau.length > 0 && !config.distributedCardTypes.includes('tableauLimit')){
-			config.distributedCardTypes.push('tableauLimit');
-			config.distributedCardTypes.push('wipes');
+		if (config.tableau.cards.length > 0 && !config.stock.distributed.includes('tableauLimit')){
+			//config.distributedCardTypes.push('tableauLimit');
+			config.stock.distributed.push('wipes');
 		}
-		if (config.tableau.length / config.stock[config.types.indexOf('tableauLimit')] > .5 
-			&& !config.distributedCardTypes.includes('restarts')){
-			config.distributedCardTypes.push('restarts');			
+		if (config.tableau.cards.length / config.stock.get('tableauLimit') > .5 
+			&& !config.stock.distributed.includes('restarts')){
+			config.stock.distributed.push('restarts');			
 		}
 		ui.refresh();
 	}
-	checkPenalties(when, from, to){
-		
-		let howManyPenalties = this.howManyPenaltyCards();
-		if (howManyPenalties < 1){
-			return;			
-		}
-		console.log('checkPenalties', when, from, to);
-		for (let i = 0; i < this.cards.length; i++){			
-			let card = this.cards[i];
-			if (card.constructor.name != 'Penalty' || when != card.when){
-				continue;
-			}
-			if (from == null 
-			|| (from == card.whenResources[0] && to == null) 
-			|| (from == card.whenResources[0] && to == card.whenResources[1])){
-				console.log('Doing penalty!', card);
-				game.doFromCheckCondition(card);
-			}
-		}
-		
-	}
+
 	
 	discardCard(){
 		this.cards.shift();
@@ -81,9 +62,6 @@ class Market {
 	
 	doAllCardsHaveThisDo(possibility){		
 		for (let card of this.cards){
-			if (card.constructor.name == 'Penalty'){
-				continue;
-			}
 			if (card.watDo != possibility){
 				return false;
 			}
@@ -92,33 +70,51 @@ class Market {
 	}
 	
 	draw(){	
-		if (this.cards.length >= config.stock[config.types.indexOf('marketLimit')]){
-			return;
+		if (this.cards.length >= config.stock.get('marketLimit')){
+			//return;
 		}
-		ui.popPop();
+		ui.popPop();		
+		config.playAudio('market-draw');
 		
-		game.playAudio('market-draw');
+		this.cards.push(this.fetchNew());
 		ui.refresh();
-		this.cards.push(new Card());
 		game.doCheck('market-draw', null, null);
 	}
-	
-	howManyPenaltyCards(){
-		let n = 0;
-		for (let card of this.cards){
-			if (card.constructor.name == 'Penalty'){			
-				n++;
+
+	fetchNew(){				
+		let bad = true, poss = null;
+		while(bad){
+			bad = false;	
+			poss = new Card();
+			for (let i in config.history.when){
+				if (poss.when + '-' + String(poss.whenResources[0]) + '-' + String(poss.whenResources[1]) 
+					== config.history.when[i] 
+					&& poss.watDo + '-' + String(poss.doResources[0]) + '-' + String(poss.doResources[1]) 
+					== config.history.watDo[i]){
+					bad = true;
+				} 
+			}
+			for (let card of config.tableau.cards){
+				if(poss.watDo == card.watDo && poss.when == card.when 
+					&& poss.whenResources[0] == card.whenResources[0] && poss.whenResources[1] == card.whenResources[1]
+					&& poss.doResources[0] == card.doResources[0] && poss.doResources[1] == card.doResources[1]){
+					bad = true;
+				}
 			}
 		}
-		return n;
+		config.history.when.push(poss.when + '-' + String(poss.whenResources[0]) + '-' + String(poss.whenResources[1]));
+		config.history.watDo.push(poss.watDo + '-' + String(poss.doResources[0]) + '-' + String(poss.doResources[1]));
+		if (config.history.when.length >= config.historySize){
+			config.history.when.pop();
+			config.history.watDo.pop();
+		}
+		return poss;
+
 	}
-	
+
 	matchDo(watDo){
 		let n = 0;
 		for (let card of this.cards){
-			if (card.constructor.name == 'Penalty'){
-				continue;
-			}
 			if (card.watDo == watDo){
 				n++;
 			}
@@ -128,34 +124,25 @@ class Market {
 	
 	refresh(clicked){
 		if (clicked != null){			
-			game.playAudio('market-refresh');
-			if (config.stock[config.types.indexOf('reloads')] > 0){
-				config.stock[config.types.indexOf('reloads')]--;
+			config.playAudio('market-refresh');
+			if (config.stock.get('reloads') > 0){
+				config.stock.set('reloads', config.stock.get('reloads') - 1);
 				
 			} else {
-				config.stock[config.types.indexOf('available')]--;				
+				config.stock.set('available', config.stock.get('available') - 1);				
 			}
+			ui.animateMarket();
+
 		}
-		this.discardAll();
-		let penaltyGenerated = false; //randNum(config.tableau.length, config.stock[config.types.indexOf('tableauLimit')]) == config.tableau.length ;
-		if (config.tableau.length < 1){
-			penaltyGenerated = false;
-		}
-		if (penaltyGenerated){
-			//this.cards.push(new Penalty);
-		}
-		let numOfCards = config.stock[config.types.indexOf('initMarket')];
-		if (config.stock[config.types.indexOf('initMarket')] > config.stock[config.types.indexOf('marketLimit')]){
-			numOfCards = config.stock[config.types.indexOf('marketLimit')];
+		
+
+		this.discardAll();		
+		let numOfCards = config.stock.get('initMarket');
+		if (config.stock.get('initMarket') > config.stock.get('marketLimit')){
+			numOfCards = config.stock.get('marketLimit');
 		}
 		for (let i = this.cards.length; i < numOfCards; i++){		  			
-			while (true){				
-				let possCard = new Card();
-				//if (!this.matchDo(possCard.watDo)){
-					this.cards.push(possCard);
-					break;
-				//}
-			}
+			this.cards.push(this.fetchNew());					
 		}
 		ui.refresh();
 		game.doCheck('market-refresh', null, null);	  

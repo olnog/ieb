@@ -13,40 +13,34 @@ class Config {
 		'market-refresh',   
 		'market-draw', 'convert', 
 		'destroy', 'win',  'loss'];
-	cardsChecked = [];	
+	checked = [];
 	checking = null;
 	checkingDelay = 400;
-	defaultDistributedCardTypes = ['clicks', 'available', 'reloads', 'marketLimit'];
-	defaultStock = [
-		0, 10, 5, 
-		5, TABLEAU_LIMIT, 3, 
-		1, 0, 0,
-		0, 0, 
-	];
-	distributedCardTypes = null;
 	finishCheckingCondition = null;	
+	history = {
+		watDo: [],
+		when: [],
+		
+	}
+	historySize = 10;
+	loopCheck = null;
+	loops = 0;
 	numOfTurns = 0;	
-	stock = [];
-	tableau = [];	
-	types = [
-		'clicks', 'available', 'reloads', 		
-		'marketLimit', 'tableauLimit', 'initMarket', 
-		'wipes', 'destroyed', 'wins', 
-		'losses', 'restarts', 
-	];	
+	stock = new Stock();		
+	tableau = new Tableau();	
 		
 	watDo = {
 		captions: [
-			"click the <img src='img2/available.png' > button", '+',  '-', 
+			"click the <img src='img2/clicks.png' > button", '+',  '-', 
 			'buy', 'discard card from market', 'refresh market',  
-			'draw a new card into the market', '', 'wipe the tableau', 
+			'draw a new card into the market', 'convert ', 'wipe the tableau', 
 			null, 'win the game', null,
 		],
 		chances: [
 			5, 10, 10, 
 			10, 10, 10, 
-			10, 10, 10,
-			10, 10, 10,
+			1, 10, 10,
+			10, 5, 10,
 			
 		],
 		probabilities: [],
@@ -55,15 +49,16 @@ class Config {
 	
 	when = {
 		captions: [
-			"the <img src='img2/available.png' > button is clicked", '+', '-', 
+			"the <img src='img2/clicks.png' > button is clicked", '+', '-', 
 			'a card is bought', 'a card is discarded from market', "the <img src='img2/reloads.png' > button is clicked", 
-			'a new card is drawn to the market', '', 'wiping the tableau',
-			'a card in the tableau is destroyed', 'winning the game', 'claiming a card in the market',
+			'a new card is drawn to the market', 'converting ', 'wiping the tableau',
+			"a card in the tableau is destroyed <span data-text='A card in your tableau is destroyed when it tries to convert but there are no resources left to covert from' class='poop'>[ ? ]</span>", 
+			'winning the game', 'claiming a card in the market',
 		],
 		chances: [
 			10, 10, 10, 
 			10, 10, 10, 
-			10, 10, 10,
+			5, 10, 10,
 			5, 10, 10,
 		],
 		probabilities: [],
@@ -80,8 +75,6 @@ class Config {
 			this.actions.length == this.when.captions.length);
 		for (let filename of this.audioFiles){
 			this.audio[filename] = new Audio('mp3/' + filename + '.mp3');
-			//this.audio[filename].play();
-			//console.log('playing filename:' + filename, this.audio[filename]);
 		}
 		let whenSum = 0, doSum = 0;
 		for (let i in this.when.chances){
@@ -93,62 +86,46 @@ class Config {
 		}
 		this.when.probSum = whenSum;
 		this.watDo.probSum = doSum;
-		this.stock = this.defaultStock.slice();
+		
 		this.reset();
 	}
-		
-	convert (from, quantity, to){
-		if (this.stock[this.types.indexOf(from)] < 1){
-			game.destroy('convert', from, to);
+			
+	clickButton(){	  
+		this.stock.set('available', this.stock.get('available') - 1);
+		this.stock.set('clicks', this.stock.get('clicks') + 1);		
+		ui.refresh();
+		ui.popPop('available');
+		ui.popClass('clicks');	  
+		this.playAudio('clickButton')
+		game.doCheck('clickButton', null, null);
+	  }
+
+	  playAudio(filename){
+		if (!this.audioOn){
 			return;
 		}
-		this.stock[this.types.indexOf(from)]--;
-		this.stock[this.types.indexOf(to)] += quantity;		
-		game.playAudio('convert');
-		ui.refresh();
-		game.doCheck('convert', from, to);
-		
+		this.audio[filename].play();
 	}
-  
-	decrement(name, quantity){
-		this.stock[this.types.indexOf(name)] -= quantity;		
-		game.playAudio('decrement');
-		game.doCheck('decrement', name, null);
-	}
-	
-	increment(name, quantity){
-		let idArr = { available: 'clickButtonDiv', 
-			marketLimit: 'maxMarket', reloads: 'reloadDiv',
-			tableauLimit: 'tableauLimit' }
-			
-		
-		this.stock[this.types.indexOf(name)] += quantity;				
-		game.playAudio('increment');
-		ui.refresh();
-		ui.popPop(idArr[name]);
-		game.doCheck('increment', name, null);
-		
-	}
-	
-	reset(){
-		let saveArr = [], saveThis = ['wins', 'restarts', 'losses'];
-		for (let i in saveThis){			
-			saveArr[i] = this.stock[this.types.indexOf(saveThis[i])];
-		}
+
+	reset(){		
 		this.numOfTurns = 0;
-		this.stock = this.defaultStock.slice();
-		this.distributedCardTypes = this.defaultDistributedCardTypes.slice();
-		this.resetCardsChecked();
-		this.tableau = [];
+		this.tableau.cards = [];
 		market.discardAll(true);		
-		for (let i in saveThis){
-			this.stock[this.types.indexOf(saveThis[i])] = saveArr[i];		
+		this.stock.reset();
+		this.loopCheck = this.stock.quant.slice();
+		this.loops = 0;
+	}
+
+	wipe(clicked){
+		if (clicked != null && (this.stock.get('wipes') < 1 || this.tableau.cards.length < 1)){
+			return;
 		}		
+		this.stock.increment('available', this.tableau.cards.length);
+		this.tableau.cards = [];
+		if (clicked != null){			
+			this.stock.decrement('wipes', 1);
+		}
+		ui.refresh();
 	}
-	resetCardsChecked(){
-		
-		this.cardsChecked = [];
-	}
-  
 
 }
