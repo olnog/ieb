@@ -1,10 +1,25 @@
 class UIRefresh{
 
     do(){
+        let losses = config.stock.get('losses');
+        let wins = config.stock.get('wins');
+        let lossesCent = 0, winsCent = 0;
+        if (losses > 0 ){
+            winsCent = Math.round(wins / losses * 10) / 10;
+        } else if (wins > 0){
+            winsCent = 100;
+        }
+        if (wins > 0 ){
+            lossesCent = Math.round(losses / wins * 10) / 10;
+        } else if (losses > 0){
+            lossesCent = 100;
+        }
+        $("#lossesCent").html(lossesCent);
+        $("#winsCent").html(winsCent);
         $("#marketSize").html(market.cards.length);
         $("#tableauSize").html(config.tableau.cards.length);	
         $("#wipe").prop('disabled', false);	
-        $("#winAt").html(AUTO_WIN_AT);
+        $("#winAt").html(config.stock.auto_win_at);
         $("#tableauLabel").removeClass('fs-4');
         $("#tableauLabel").removeClass('text-decoration-underline');	
         $("#audioOn").prop('checked', config.audioOn);	
@@ -39,5 +54,6 @@ class UIRefresh{
             $("#" + name).html(config.stock.get(name));
 	    }
         $(".available").html(config.stock.get('available'));
+        $(".loops").html(config.stock.get('loops'));
     }
 }

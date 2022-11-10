@@ -1,5 +1,4 @@
 const TABLEAU_LIMIT = 5;
-const AUTO_WIN_AT = 20;
 console.log('market');
 market = new Market();
 console.log('config');

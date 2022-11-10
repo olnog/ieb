@@ -18,9 +18,9 @@ class Card{
 		}		
 		this.whenResources = this.gen.resources(2);		
 		this.doResources = this.gen.doResources(this.whenResources);		
-		this.when = this.gen.when();
+		this.when = this.gen.when(this.whenResources);
 		this.watDo = this.gen.watDo(this.when, this.doResources, this.whenResources);	
-		this.quantity = randNum(2, 4);
+		this.quantity = randNum(2, config.maxConvert);
 
 		if (this.when == 'increment'){
 			this.whenResources[1] = null;
@@ -33,6 +33,9 @@ class Card{
 		} else if (this.watDo != 'convert'){
 			this.doResources[0] = null;
 			this.doResources[1] = null;
+		}
+		if (this.watDo == 'convert' && this.doResources[0] == 'wins'){
+			this.quantity *= randNum(2, 3);
 		}
 
 

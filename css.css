@@ -22,7 +22,11 @@
 
 #oldMarket {
     position: absolute;
-    left: 0pxx;
+    left: 0px;
+}
+#market {
+    position: relative;
+    left: 0px;
 }
 
 .buy{
@@ -33,6 +37,12 @@
 }
 .claim {
     position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.keep {
+    position:absolute;
     bottom: 0;
     left: 0;
 }

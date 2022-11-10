@@ -1,5 +1,6 @@
 class Tableau {
     cards = [];
+	savedCard = null;
 
 	areTheyIncrementingAlready(when){
 		for (let card of this.cards){
@@ -59,8 +60,18 @@ class Tableau {
 			config.playAudio('destroy');
 			config.stock.set('destroyed', config.stock.get('destroyed') + 1);
 			ui.refresh()
+			ui.animateBG();
 			game.doCheck('destroy', null, null);			
 		}
+	}
+
+	destroyAll(){
+		if (this.cards.length < 1){
+			return;
+		}
+		console.log('destroyAll');
+		config.stock.set('destroyed', config.stock.get('destroyed') + this.cards.length);
+		this.cards = [];
 	}
 
     doTheyOwnDo(poss){
@@ -71,7 +82,15 @@ class Tableau {
 		}
 		return false;
 	}
-
+	fetchFirstWin(){
+		for (let cardID in this.cards){
+			let card = this.cards[cardID];
+			if (card.watDo == 'win'){
+				return cardID;
+			}
+		}
+		return null;
+	}
 	fetchMatchingWhens(when, resources){
 		let matchingWhens = [];
 		for (let cardID in this.cards){			
@@ -97,6 +116,18 @@ class Tableau {
 		return n;
 	}
 
+	keep(cardID){
+		if (config.stock.get('loops') < 1){
+			return;
+		}
+		config.stock.set('loops', config.stock.get('loops') - 1);
+		this.savedCard = this.cards[cardID];
+		config.reset();
+		$(".windows").addClass('d-none');
+		$("#game").removeClass('d-none');
+		market.refresh();
+	}
+
     matchWhen(actionName, resources){
 			for (let card of this.cards){			
 			if(card.when != actionName){
@@ -108,5 +139,15 @@ class Tableau {
 			}
 		}
 		return false;		
+	}
+
+	removeWins(){
+		while(true){
+			let firstWin = this.fetchFirstWin();
+			if (firstWin === null){
+				return;
+			}
+			this.cards.splice(firstWin, 1);
+		}
 	}
 }

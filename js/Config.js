@@ -25,6 +25,7 @@ class Config {
 	historySize = 10;
 	loopCheck = null;
 	loops = 0;
+	maxConvert = 4;
 	minNumOfTurnsBeforeWin = 3;
 	numOfTurns = 0;	
 	passes = 0;
@@ -42,7 +43,7 @@ class Config {
 			5, 10, 10, 
 			10, 10, 10, 
 			1, 10, 10,
-			10, 5, 10,
+			10, 6, 10,
 			
 		],
 		probabilities: [],
@@ -60,7 +61,7 @@ class Config {
 		chances: [
 			10, 10, 10, 
 			10, 10, 10, 
-			5, 10, 10,
+			2, 10, 10,
 			5, 10, 10,
 		],
 		probabilities: [],

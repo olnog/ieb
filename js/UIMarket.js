@@ -27,12 +27,20 @@ class UIMarket {
 			whenClass = ' important ';
 		}
 		let html = "<div class='cardDiv" + noBuyClass + "'>";
-		html += "<div class='text-center '><img src='img2/available"
+		
+		html += "<div>Cost: "
+		/*
+		html += "<span class='available'>" 
+		+ config.stock.get('available') + "</span>/" 
+		*/
+		html += card.cost; 
+		html += " <img src='img2/available"
 		if (noBuyClass != ''){
 			html += "-noBuy";
 		}
-		html += ".png'></div><div><span class='available'>" 
-		+ config.stock.get('available') + "</span>/" + card.cost + "</div>";		
+		html += ".png'>"
+		
+		+ "</div>";		
 		html += "<div class='fw-bold mt-3'>When:</div>"
 		html += "<div class='" + whenClass + "'> ";
 		if (noBuyClass != ''){

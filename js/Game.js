@@ -1,7 +1,7 @@
 class Game{	
 	checkCondition(when, resources){
-		console.log('checkCondition', when, resources);
-		if (config.loops != 0 && config.loops % 3 == 0){
+		//console.log('checkCondition', when, resources);
+		if (config.loops != 0 && config.loops % config.tableau.length == 0){
 			
 			//console.log(config.loops);
 			let goingDown = this.checkLoop();
@@ -33,7 +33,7 @@ class Game{
 				this.lose(typeName);
 			}
 		}				
-		if(config.stock.get('available') > AUTO_WIN_AT){
+		if(config.stock.get('available') > config.stock.auto_win_at){
 			this.win('available', null);
 		}
 	}
@@ -41,7 +41,7 @@ class Game{
 		let goingDown = false;
 		for (let i in config.stock.quant){
 			let quant = config.stock.quant[i];
-			if (quant < config.loopCheck[i] && quant - config.loopCheck[i] <= -2){
+			if (quant < config.loopCheck[i] && quant - config.loopCheck[i] <= -(config.tableau.length - 1)){
 				goingDown = true;
 			}
 		}
@@ -95,9 +95,7 @@ class Game{
 		config.playAudio('loss')
 		alert('You lost because you ran out of ' + why + ". How many losses can you get?");		
 		config.stock.set('losses', config.stock.get('losses') + 1);
-		if (!config.stock.distributed.includes('losses')){
-			config.stock.distributed.push('losses');
-		}
+		
 		this.restart();		
 	}
 	
@@ -109,16 +107,24 @@ class Game{
 		if (clicked != null){
 			config.stock.set('restarts', config.stock.get('restarts') - 1);						
 		}
+		
+		if (config.stock.get('loops') > 0 && config.tableau.cards.length > 0){
+			config.tableau.removeWins();
+			if (config.tableau.cards.length > 0){
+				ui.displayLoops();		
+				return;		
+			}
+		}
 		config.reset();
-		market.refresh();
-		ui.refresh();
+		market.refresh();		
 	}
 	
 	win(why, whenIs){
 		config.playAudio('win');
 		let reasons = { increment: 'incremented', claim: 'was claimed', convert: 'converted', destroy: 'got destroyed'};
 		if (why == 'available'){
-			alert("You won because you increased available past " + AUTO_WIN_AT + ". How many wins can you get?");
+			alert("You won because you increased available past " + config.stock.auto_win_at + ". How many wins can you get?");
+			config.stock.auto_win_at = Math.round(config.stock.auto_win_at * 1.5);
 		} else if (why == 'when'){
 			alert("You won because the right card in your tableau " + reasons[whenIs] + ". How many wins can you get?");			
 		}		

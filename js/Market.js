@@ -27,6 +27,7 @@ class Market {
 	
 	claimOrBuy(marketID){
 		let card = this.cards [marketID];
+		let destroyed = false;
 		config.playAudio('market-buy');
 		config.tableau.cards.push(card);
 		this.cards.splice(marketID, 1);
@@ -38,7 +39,14 @@ class Market {
 			config.stock.distributed.push('wipes');
 			config.stock.distributed.push('restarts');			
 		}
+		if (config.tableau.cards.length > config.stock.get('tableauLimit')){
+			config.tableau.destroyAll();
+			destroyed = true;
+		}
 		ui.refresh();
+		if (destroyed){
+			ui.animateBG();
+		}
 	}
 
 	
@@ -79,7 +87,7 @@ class Market {
 	}
 
 	fetchNew(){				
-		console.log('fetchNew');
+		//console.log('fetchNew');
 		let bad = true, poss = null;
 		config.passes = 0;
 		while(bad){
@@ -141,6 +149,12 @@ class Market {
 
 		this.discardAll();		
 		let numOfCards = config.stock.get('marketInit');
+		if (config.tableau.savedCard != null){
+			this.cards.push(config.tableau.savedCard);
+			config.tableau.savedCard = null;
+			console.log(this.cards);
+		}
+		
 		for (let i = this.cards.length; i < numOfCards; i++){		  			
 			this.cards.push(this.fetchNew());					
 		}

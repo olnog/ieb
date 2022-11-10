@@ -32,7 +32,7 @@ class CardGen {
 		return config.actions[actionID];		
 	}
 	
-	when(){
+	when(whenResources){
 		let actionID = null;				
 		while (actionID == null){		
 			let rand = randNum(1, config.when.probSum);				
@@ -43,7 +43,7 @@ class CardGen {
 					continue;
 				}				
 				if ((i == 0 || rand > config.watDo.probabilities[i - 1]) 
-					&& this.check.when(i)){				
+					&& this.check.when(i, whenResources)){				
 					actionID = i;
 					break;
 				}								
@@ -54,10 +54,15 @@ class CardGen {
 	}	
 
     resources(){		
+		let bannedResourcesTo = ['destroyed', 'loops', 'wins'];		
 		let resources = []
 		for (let i = 0; i < this.numOfResources; i ++){			
 			while (true){
 				let randType = randNum(0, config.stock.distributed.length -1);				
+				if (resources.length == 1 
+					&& bannedResourcesTo.includes(config.stock.distributed[randType])){
+					continue;
+				}
 				if (!resources.includes(config.stock.distributed[randType])){
 					resources.push(config.stock.distributed[randType]);
 					break;

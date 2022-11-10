@@ -23,6 +23,10 @@ $(document).on('click', '#audioOn', function(e){
 	config.audioOn = $("#audioOn").prop('checked');
 });
 
+$(document).on('click', '.back', function(e){	
+	$(".windows").addClass('d-none');
+	$("#game").removeClass('d-none');
+});
 
 $(document).on('click', '.buy', function(e){	
 	market.buy(e.target.id.split('-')[1], null);	
@@ -34,6 +38,10 @@ $(document).on('click', '.claim', function(e){
 
 $(document).on('click', '#clickButton', function(e){	
 	config.clickButton();
+});
+
+$(document).on('click', '.keep', function(e){	
+	config.tableau.keep(e.target.id.split('-')[1])
 });
 
 $(document).on('click', '.show', function(e){	

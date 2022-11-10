@@ -15,17 +15,38 @@
 		<div class='text-center'>
 			Audio On? <input id='audioOn' type='checkbox'>
 		</div>
-		<div id='game' class='windows'>
-			<div id='stats' class='row mb-3 d-none'>
+		<div id="loopMenu" class="windows d-none">
+			<div class="text-center mb-3 mt-3">
+				<button id="" class="back btn btn-lg btn-danger p-3">back</button>				
+			</div>
+			<div class="text-center mb-3" style="clear:left;">
+				Since you have <span class="loops"></span> loop(s), you can trade a loop to keep a card from your tableau.
+			</div>
+			<div id="whichCardsToKeep" class='text-center' style="clear:left;"></div>
+			
+		</div><div id='game' class='windows'>
+			<div id='stats' class='row mb-4 d-none mt-3'>
 				<div id='winsLabel' class='col text-center'>
-					Wins: <span id='wins'></span>
-					<img src='img2/wins.png' height='32' width='32'>
-				</div><div id='loopsLabel' class='col text-center'>
-					Loops: <span id='loops'></span>
+					<div>
+						<img src='img2/wins.png' height='32' width='32'>
+					</div><div>
+						Wins: <span id='wins'></span>
+						(<span id='winsCent'></span>%)
+					</div>
 					
+				</div><div id='loopsLabel' class='col text-center'>
+					<div>
+						<img src='img2/loops.png' height='32' width='32'>
+					</div><div>
+						Loops: <span class='loops'></span>
+					</div>
 				</div><div id='lossesLabel' class='col text-center'>
-					Losses: <span id='losses'></span>
-					<img src='img2/losses.png' height='32' width='32'>
+					<div>
+						<img src='img2/losses.png' height='32' width='32'>
+					</div><div>
+						Losses: <span id='losses'></span>
+						(<span id='lossesCent'></span>%)
+					</div>
 				</div>
 			</div>
 
@@ -57,7 +78,7 @@
 					>[ ? ]</span>
 				</div>
 			</div>
-			<div class='mt-3 mb-3 text-center'>
+			<div class='mt-3 mb-4 text-center'>
 					<button id='refresh' class='btn btn-lg btn-outline-dark p-3 everythingElse'>
 						<div>
 							<img id='refreshImg' src='img2/reloads.png' height='32' width='32'>						
@@ -100,13 +121,7 @@
 					data-text="This is the market! Buy cards here." 
 					class="poop"
 					>[ ? ]</span>
-				</div>
-				<div class='text-center'>
-					
-					<img src='img2/marketInit.png' height='32' width='32'>
-					
-
-				</div>
+				</div>				
 				<div id='oldMarket' class='text-center mb-5'></div>
 				<div id='market' class='text-center mb-5'></div>
 				<div id='' class='text-center mt-5' style='clear:left;'>
@@ -127,7 +142,7 @@
 			
 		</div><div id='help' class='d-none windows'>
 			<div class='text-center'>
-				<button id='show-game' class='btn btn-link show'>[ back ]</button>
+				<button id='' class='back btn btn-link'>[ back ]</button>
 			</div>
 			<div class='text-center'>Hey! <span class='fw-bold'><span class='text-decoration-underline'>Thanks</span> for trying the game.</span> Here's some help to get you situationed:</div>
 			<div class='fw-bold mt-3'>

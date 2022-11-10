@@ -1,8 +1,10 @@
 class Stock {
+	auto_win_at = 20;
+
     defaultDistributed = ['available', 'reloads'];
 
     defaultQuant = [
-		0, Math.round(AUTO_WIN_AT / 2), 5, 
+		0, Math.round(this.auto_win_at / 2), 5, 
 		0, TABLEAU_LIMIT, 3, 
 		1, 0, 0,
 		0, 0, 0,
@@ -58,12 +60,12 @@ class Stock {
 	}
 
     reset(){
-        let saveArr = [], saveThis = ['destroyed', 'wins', 'restarts', 'losses', 'loops'];
+        let saveArr = [], saveThis = ['wins', 'restarts', 'losses', 'loops'];
 		for (let i in saveThis){			
 			saveArr[i] = this.get(saveThis[i]);
 		}
         this.quant = this.defaultQuant.slice();
-        this.distributed = this.defaultDistributed.slice();
+        //this.distributed = this.defaultDistributed.slice(); is this okay?
 		for (let i in saveThis){
 			this.set(saveThis[i], saveArr[i]);		
 		}	
