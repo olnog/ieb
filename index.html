@@ -140,39 +140,69 @@
 			</div>
 			
 			
-		</div><div id='help' class='d-none windows'>
-			<div class='text-center'>
-				<button id='' class='back btn btn-link'>[ back ]</button>
-			</div>
-			<div class='text-center'>Hey! <span class='fw-bold'><span class='text-decoration-underline'>Thanks</span> for trying the game.</span> Here's some help to get you situationed:</div>
-			<div class='fw-bold mt-3'>
-				Winning 
-			</div><div class='ms-3'>
-				You win the game if you get <img src='img2/available.png'> to 20. It's harder than it sounds!
-			</div><div class='ms-3'>
-				Alternatively, you win if you have a card in your tableau with a <span class='fw-bold'>Do:</span> 
-				that says 'win the game' and you fulfill its <span class='fw-bold'>When:</span> condition.
-			</div><div class='fw-bold mt-3'>
-				Playing The Game
-			</div><div class='ms-3'>
-				First, click the main button with the <img src='img2/available.png'> icon on it. This will give you a <img src='img2/clicks.png'> that allows you to buy cards in the market.
-			</div><div class='ms-3'>
-				Every card has a <span class='fw-bold'>When:</span> condition that will activate when its in your tableau. When it's activated, it will then do whatever its <span class='fw-bold'>Do:</span> is.
-			</div><div class='ms-3'>
-				The tricky thing is you don't have much resources. You lose a <img src='img2/available.png'> each time you click the button to get more  <img src='img2/clicks.png'> to buy more cards. 
-			</div><div class='ms-3'>
-				And you only have so many cards that can fit in your market. (<img src='img2/marketInit.png'>) Same thing with your tableau! (<img src='img2/tableauLimit.png'>) 
-			</div><div class='ms-3'>
-				But the cards you buy give you more of these resources! But only if you fulfill its <span class='fw-bold'>When:</span> condition.
-			</div><div class='ms-3'>
-				Some of the cards do weird stuff! 
-			</div><div class='ms-3'>
-				Like instead of giving you resources, they convert resources you already have to other resources. Like ( <img src='img2/available.png'> -> 4 <img src='img2/clicks.png'> ) will trade 1 of your <img src='img2/available.png'> for 4 <img src='img2/clicks.png'> but be careful! Don't run out of <img src='img2/available.png'>!
-			</div><div class='ms-3'>
-				Some cards only activate when cards in your tableau are destroyed. How does that happen?!? And some cards you can't buy? They just give out penalties? What the...!
-			</div><div class='ms-3'>
-				Anyways, try not to worry too much about every little detail. Just have some fun and don't worry if you lose. It's how you play the game!
-			</div>			
+		</div><div id='help' class='d-none windows container'>
+			<div class="row">
+				<div class='text-center'>
+					<button id='' class='back btn btn-link'>[ back ]</button>
+				</div>
+				<div class='text-center'>Hey! <span class='fw-bold'><span class=''>Thanks</span> for trying the game.</span> Here's some help to get you situationed:</div>
+				<div class='fw-bold mt-3'>
+					Winning 
+				</div><div class='ms-3 mb-2 '>
+					You win the game if you get <img src='img2/available.png'> to 20. It's harder than it sounds!
+				</div><div class='ms-3 mb-2 '>
+					Alternatively, you win if you have a card in your tableau with a <span class='fw-bold'>Do:</span> 
+					that says 'win the game' and you fulfill its <span class='fw-bold'>When:</span> condition.
+				</div><div class='fw-bold mt-3'>
+					Playing The Game
+				</div><div class='ms-3 mb-2 '>
+					Every card costs <img src="img2/available.png"> and every card has a <span class='fw-bold'>When:</span> condition that will activate when its in your tableau. When it's activated, it will then do whatever its <span class='fw-bold'>Do:</span> is.
+				</div><div class='ms-3 mb-2  '>
+					If you don't like any of the cards that are available, click <img src="img2/reloads.png"> button to reload the market cards. This costs a <img src="img2/reloads.png"> but if you don't have any, it'll just cost <img src="img2/available.png">.
+				</div><div class='ms-3 mb-2  '>
+					The tricky thing is you don't have much resources. You lose <img src='img2/available.png'> each time you buy a card and every time you click the <img src="img2/reloads.png"> button and don't have any <img src="img2/reloads.png">.
+				</div><div class='ms-3 mb-2  '>
+					And you only have so many cards that can fit in your tableau. (<img src='img2/tableauLimit.png'>) 
+				</div><div class='ms-3 mb-2  '>
+					But the cards you buy give you more of these resources! But only if you fulfill its <span class='fw-bold'>When:</span> condition.
+				</div><div class='ms-3 mb-2  '>
+					Some of the cards do weird stuff! 
+				</div><div class='ms-3 mb-2  '>
+					Instead of giving you resources, some cards convert resources you already have to other resources. Like ( <img src='img2/available.png'> -> 4 <img src='img2/clicks.png'> ) will trade 1 of your <img src='img2/available.png'> for 4 <img src='img2/reloads.png'> but be careful! Don't run out of <img src='img2/available.png'>!
+				</div><div class='ms-3 mb-2  '>
+					Some cards only activate when cards in your tableau are destroyed. When a card tries to convert and it doesn't have any of that source resource, the card is destroyed. 
+				</div><div class='ms-3 mb-2  '>
+					Anyways, try not to worry too much about every little detail. Just have some fun and don't worry if you lose. It's how you play the game!
+				</div><div class='fw-bold mt-3'>
+					Losing
+				</div><div class='ms-3 mb-2  '>
+					If you ever run out of <img src="img2/available.png">, <img src="img2/marketInit.png">, or <img src="img2/tableauLimit.png">, you lose.
+				</div><div class='fw-bold mt-3'>
+					Icons
+				</div><div class='ms-3 mb-2  '>
+					<img src="img2/available.png"> - keeps you alive. Used every time you buy a card or click the <img src="img2/reloads.png"> button when you have no <img src="img2/reloads.png">. Start with 10.
+				</div><div class='ms-3 mb-2  '>
+					<img src="img2/reloads.png"> - used every time you click the <img src="img2/reloads.png"> button to get new cards in the market. If you run out, you can still refresh the market, but now it costs <img src="img2/available.png">. Start with 5.
+				</div><div class='ms-3 mb-2  '>
+					<img src="img2/marketInit.png"> - the number of new cards you'll get when you refresh the market. Start with 3.
+				</div><div class='ms-3 mb-2  '>
+					<img src="img2/tableauLimit.png"> - the maximum number of cards you can have in your tableau. Start with 5.
+				</div><div class='ms-3 mb-2  '>
+					<img src="img2/wipes.png"> - when you click the <img src="img2/wipes.png"> button, it wipes the tableau so you can start over.				
+				</div><div class='ms-3 mb-2  '>
+					<img src="img2/destroyed.png"> - number of destroyed cards. This resource allow you to claim any card in lieu of buying it.
+				</div><div class='ms-3 mb-2  '>
+					The following do not reset at the start of every game:
+				</div><div class='ms-3 mb-2  '>
+					<img src="img2/restarts.png"> - when you click the <img src="img2/restarts.png"> button, it allows you to restart the game without losing
+				</div><div class='ms-3 mb-2  '>
+					<img src="img2/wins.png"> - how many times you've won
+				</div><div class='ms-3 mb-2  '>
+					<img src="img2/losses.png"> - how many times you've lost
+				</div><div class='ms-3 mb-2  '>
+					<img src="img2/loops.png"> - how many times you've managed to create an infinite loop with your tableau
+				</div>
+			</div>	
 		</div>
 		
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
